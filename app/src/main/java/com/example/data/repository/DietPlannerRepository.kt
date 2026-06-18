@@ -105,6 +105,7 @@ class DietPlannerRepository(private val dao: DietPlannerDao) {
     }
 
     fun getLocalFoodLogsFlow(date: String, userId: String): Flow<List<FoodLogEntity>> = dao.getFoodLogsFlow(date, userId)
+    fun getAllFoodLogsFlow(userId: String): Flow<List<FoodLogEntity>> = dao.getAllFoodLogsFlow(userId)
     suspend fun saveFoodLog(foodLog: FoodLogEntity) = withContext(Dispatchers.IO) {
         dao.insertFoodLog(foodLog)
     }
@@ -113,6 +114,7 @@ class DietPlannerRepository(private val dao: DietPlannerDao) {
     }
 
     fun getLocalExerciseLogsFlow(date: String): Flow<List<ExerciseLogEntity>> = dao.getExerciseLogsFlow(date)
+    fun getAllExerciseLogsFlow(): Flow<List<ExerciseLogEntity>> = dao.getAllExerciseLogsFlow()
     suspend fun saveExerciseLog(exerciseLog: ExerciseLogEntity) = withContext(Dispatchers.IO) {
         dao.insertExerciseLog(exerciseLog)
     }

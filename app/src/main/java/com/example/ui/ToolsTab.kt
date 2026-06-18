@@ -29,6 +29,17 @@ import com.example.data.model.MealReminderEntity
 import com.example.data.model.UserProfileEntity
 import com.example.viewmodel.DietPlannerViewModel
 import java.util.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
+import java.text.SimpleDateFormat
+import androidx.compose.ui.graphics.nativeCanvas
+import android.graphics.Paint
+import android.graphics.Typeface
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -43,6 +54,9 @@ fun ToolsTab(
     val focusManager = LocalFocusManager.current
 
     val allRecipes by viewModel.allRecipes.collectAsState()
+    val moodLogs by viewModel.currentMoodLogs.collectAsState()
+    val foodLogs by viewModel.allFoodLogs.collectAsState()
+    val exerciseLogs by viewModel.allExerciseLogs.collectAsState()
 
     // Form builder states for adding custom reminder
     var isExpandedReminderForm by rememberSaveable { mutableStateOf(false) }
@@ -105,6 +119,27 @@ fun ToolsTab(
             viewModel = viewModel,
             userProfile = userProfile,
             isBengali = isBengali
+        )
+
+        // RECHARTS WEEKLY MOOD, DIET & EXERCISE CORRELATION DASHBOARD
+        MoodAnalysisDashboard(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // STANDALONE WEEKLY MOOD TREND VELOCITY CHART
+        MoodTrendChart(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // MOOD & HEALTH REPORT EXPORTER CAPABILITY
+        MoodHealthReportExporter(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
         )
 
         // MEAL REMINDERS TIMINGS SETTINGS

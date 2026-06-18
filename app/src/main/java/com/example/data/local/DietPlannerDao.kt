@@ -69,6 +69,9 @@ interface DietPlannerDao {
     @Query("SELECT * FROM food_logs WHERE date = :date AND userId = :userId ORDER BY timestamp DESC")
     fun getFoodLogsFlow(date: String, userId: String): Flow<List<FoodLogEntity>>
 
+    @Query("SELECT * FROM food_logs WHERE userId = :userId")
+    fun getAllFoodLogsFlow(userId: String): Flow<List<FoodLogEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFoodLog(foodLog: FoodLogEntity)
 
@@ -78,6 +81,9 @@ interface DietPlannerDao {
     // Exercise logs
     @Query("SELECT * FROM exercise_logs WHERE date = :date ORDER BY timestamp DESC")
     fun getExerciseLogsFlow(date: String): Flow<List<ExerciseLogEntity>>
+
+    @Query("SELECT * FROM exercise_logs")
+    fun getAllExerciseLogsFlow(): Flow<List<ExerciseLogEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExerciseLog(exerciseLog: ExerciseLogEntity)

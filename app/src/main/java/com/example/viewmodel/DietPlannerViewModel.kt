@@ -443,8 +443,15 @@ class DietPlannerViewModel(
         .flatMapLatest { (date, uid) -> repository.getLocalFoodLogsFlow(date, uid) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val allFoodLogs: StateFlow<List<FoodLogEntity>> = currentUserId
+        .flatMapLatest { uid -> repository.getAllFoodLogsFlow(uid) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     val currentExerciseLogs: StateFlow<List<ExerciseLogEntity>> = _selectedDate
         .flatMapLatest { date -> repository.getLocalExerciseLogsFlow(date) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val allExerciseLogs: StateFlow<List<ExerciseLogEntity>> = repository.getAllExerciseLogsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // Language state: true for Bengali (default), false for English
