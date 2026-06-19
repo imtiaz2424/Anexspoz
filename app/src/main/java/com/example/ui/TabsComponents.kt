@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -485,6 +486,12 @@ fun ExploreTab(
                 }
             }
         }
+
+        // --- DAILY WATER INTAKE TRACKER ---
+        ExploreWaterTrackerCard(
+            viewModel = viewModel,
+            isBengali = isBengali
+        )
 
         Divider(color = Color(0xFFECEFF1), modifier = Modifier.padding(vertical = 4.dp))
 
@@ -1447,5 +1454,364 @@ fun adjustDateString(currentDate: String, daysOffset: Int): String {
         format.format(calendar.time)
     } catch (e: Exception) {
         currentDate
+    }
+}
+
+// ==========================================
+// DAILY WATER INTAKE TRACKER COMPONENT (EXPLORE TAB)
+// ==========================================
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun ExploreWaterTrackerCard(
+    viewModel: DietPlannerViewModel,
+    isBengali: Boolean
+) {
+    val waterLog by viewModel.waterLog.collectAsState()
+    val userProfile by viewModel.userProfile.collectAsState()
+
+    val waterAmount = waterLog?.amountMl ?: 0
+    val targetWater = userProfile?.dailyWaterTargetMl ?: 2500
+    val glassSizeMl = 250
+    val currentGlasses = waterAmount / glassSizeMl
+    val targetGlasses = (targetWater + glassSizeMl - 1) / glassSizeMl // ceil division
+
+    val progressFraction = if (targetWater > 0) (waterAmount.toFloat() / targetWater.toFloat()).coerceIn(0f, 1f) else 0f
+    val percentage = (progressFraction * 100).toInt()
+    val isGoalReached = waterAmount >= targetWater
+
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = BorderStroke(1.dp, Color(0xFFE1F5FE)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .testTag("explore_water_tracker_card")
+    ) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            // Header: Title and Quick Target Info
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFE1F5FE)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocalDrink,
+                            contentDescription = "Water Tracker Icon",
+                            tint = Color(0xFF0288D1),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = if (isBengali) "হাইড্রেশন স্টেশন" else "Hydration Station",
+                            fontWeight = FontWeight.Black,
+                            fontSize = 15.sp,
+                            color = Color(0xFF1A237E)
+                        )
+                        Text(
+                            text = if (isBengali) "পানি পানের দৈনিক লক্ষ্য" else "Track daily water goals",
+                            fontSize = 11.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+
+                // Goal Badge
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (isGoalReached) Color(0xFFE8F5E9) else Color(0xFFE1F5FE))
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = if (isGoalReached) {
+                            if (isBengali) "পূর্ণ হয়েছে! 🎉" else "Target Met! 🎉"
+                        } else {
+                            if (isBengali) "${percentage}% সম্পন্ন" else "${percentage}% Done"
+                        },
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp,
+                        color = if (isGoalReached) Color(0xFF2E7D32) else Color(0xFF0288D1)
+                    )
+                }
+            }
+
+            // Body Area: Progress circle + Description Stats
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Circular Progress visualization on the left
+                Box(
+                    modifier = Modifier.size(80.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Track background circle
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawCircle(
+                            color = Color(0xFFECEFF1),
+                            radius = size.minDimension / 2,
+                            style = Stroke(width = 8.dp.toPx(), cap = StrokeCap.Round)
+                        )
+                    }
+                    // Progress arc with blue gradient
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawArc(
+                            brush = Brush.linearGradient(
+                                colors = listOf(Color(0xFF00B0FF), Color(0xFF2979FF))
+                            ),
+                            startAngle = -90f,
+                            sweepAngle = 360f * progressFraction,
+                            useCenter = false,
+                            style = Stroke(width = 8.dp.toPx(), cap = StrokeCap.Round)
+                        )
+                    }
+                    // Inner percentage text
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "$percentage%",
+                            fontWeight = FontWeight.Black,
+                            fontSize = 16.sp,
+                            color = Color(0xFF1E88E5)
+                        )
+                        Text(
+                            text = if (isBengali) "পানি" else "Water",
+                            fontSize = 8.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+
+                // Detail Stats info on the right
+                Column(
+                    modifier = Modifier.weight(1.5f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = if (isBengali) "পানের পরিমাণ: ${waterAmount} মি.লি." else "Logged Volume: $waterAmount mL",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = Color(0xFF37474F)
+                    )
+                    Text(
+                        text = if (isBengali) "দৈনিক লক্ষ্য: ${targetWater} মি.লি." else "Daily Target: $targetWater mL",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+
+                    val remaining = (targetWater - waterAmount).coerceAtLeast(0)
+                    Text(
+                        text = if (remaining > 0) {
+                            if (isBengali) "আরও প্রয়োজন: ${remaining} মি.লি." else "Remaining: $remaining mL"
+                        } else {
+                            if (isBengali) "প্রয়োজনের চেয়ে ${waterAmount - targetWater} মি.লি. বেশি!" else "Over Target: ${waterAmount - targetWater} mL!"
+                        },
+                        fontSize = 11.sp,
+                        fontWeight = if (remaining == 0) FontWeight.Bold else FontWeight.Normal,
+                        color = if (remaining == 0) Color(0xFF2E7D32) else Color(0xFFE65100)
+                    )
+                }
+            }
+
+            Divider(color = Color(0xFFECEFF1), thickness = 1.dp)
+
+            // Interactive Glasses click grid!
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = if (isBengali) "গ্লাসে ক্লিক করে পানি ট্র্যাকিং আপডেট করুন:" else "Interactive Water Glass Tracker (Click any Glass to update in batches):",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 11.sp,
+                    color = Color.Gray
+                )
+
+                // Layout glasses of water
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Maximum 12 glasses visual buffer (limit overflow clutter, but support up to actual target glasses or logged)
+                    val maxUiGlasses = maxOf(targetGlasses, currentGlasses).coerceIn(4, 12)
+                    for (i in 1..maxUiGlasses) {
+                        val isFilled = i <= currentGlasses
+                        val isTargetMarker = i == targetGlasses
+
+                        Box(
+                            modifier = Modifier
+                                .size(width = 46.dp, height = 54.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (isFilled) Color(0xFFE1F5FE) else Color(0xFFF5F7F8))
+                                .border(
+                                    border = BorderStroke(
+                                        width = if (isTargetMarker) 2.dp else 1.dp,
+                                        color = if (isFilled) {
+                                            if (isTargetMarker) Color(0xFF1E88E5) else Color(0xFF4FC3F7)
+                                        } else {
+                                            if (isTargetMarker) Color(0xFF90CAF9) else Color(0xFFECEFF1)
+                                        }
+                                    ),
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .clickable {
+                                    val newAmount = i * glassSizeMl
+                                    val difference = newAmount - waterAmount
+                                    viewModel.addWater(difference)
+                                }
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = if (isFilled) "🥛" else "🥃",
+                                    fontSize = 18.sp
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "${i * 250}",
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isFilled) Color(0xFF0288D1) else Color.Gray
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Quick adjustment buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // Add 1 glass (+250ml)
+                Button(
+                    onClick = { viewModel.addWater(250) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .height(40.dp)
+                        .testTag("explore_add_water_glass_btn")
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text("➕ 💧", fontSize = 14.sp)
+                        Text(
+                            text = if (isBengali) "১ গ্লাস যোগ" else "+1 Glass",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+
+                // Subtract 1 glass (-250ml)
+                OutlinedButton(
+                    onClick = { viewModel.addWater(-250) },
+                    border = BorderStroke(1.dp, Color(0xFFB0BEC5)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF546E7A)),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1.2f)
+                        .height(40.dp)
+                        .testTag("explore_sub_water_glass_btn")
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text("➖", fontSize = 12.sp)
+                        Text(
+                            text = if (isBengali) "১ গ্লাস বাদ" else "-1 Glass",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                // Reset back to 0 button
+                OutlinedButton(
+                    onClick = { viewModel.addWater(-waterAmount) },
+                    border = BorderStroke(1.dp, Color(0xFFFFCDD2)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFC62828)),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp)
+                        .testTag("explore_reset_water_btn")
+                ) {
+                    Text(
+                        text = if (isBengali) "রিসেট" else "Reset",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            // Animated Celebratory Goal reached status message!
+            AnimatedVisibility(
+                visible = isGoalReached,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xFFE8F5E9))
+                        .border(1.dp, Color(0xFFC8E6C9), RoundedCornerShape(14.dp))
+                        .padding(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text("🌟", fontSize = 24.sp)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (isBengali) "অসাধারণ হাইড্রেশন! 👏" else "Stay Superbly Hydrated! 👏",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                color = Color(0xFF1B5E20)
+                            )
+                            Text(
+                                text = if (isBengali) {
+                                    "অভিনন্দন! আপনি আজকে আপনার দৈনিক পানি পানের লক্ষ্য সম্পন্ন করেছেন।"
+                                } else {
+                                    "Excellent achievement! You have fulfilled your healthy biological water requirements today."
+                                },
+                                fontSize = 10.sp,
+                                color = Color(0xFF2E7D32),
+                                lineHeight = 14.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

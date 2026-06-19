@@ -34,8 +34,12 @@ data class FoodSearchResult(
 
 class DietPlannerViewModel(
     private val repository: DietPlannerRepository,
-    context: Context
+    private val context: Context
 ) : ViewModel() {
+
+    // Language state: true for Bengali, false for English
+    private val _isBengali = MutableStateFlow(false)
+    val isBengali: StateFlow<Boolean> = _isBengali.asStateFlow()
 
     val authManager = com.example.data.auth.FirebaseAuthManager(context.applicationContext)
 
@@ -88,6 +92,13 @@ class DietPlannerViewModel(
     private val _eventMessage = MutableStateFlow<String?>(null)
     val eventMessage: StateFlow<String?> = _eventMessage.asStateFlow()
 
+    private val _showProfileSetupOnboarding = MutableStateFlow(false)
+    val showProfileSetupOnboarding: StateFlow<Boolean> = _showProfileSetupOnboarding.asStateFlow()
+
+    fun setProfileSetupOnboardingShown(shown: Boolean) {
+        _showProfileSetupOnboarding.value = shown
+    }
+
     private val _recipeCheckedIngredients = MutableStateFlow<Map<String, Set<Int>>>(emptyMap())
     val recipeCheckedIngredients: StateFlow<Map<String, Set<Int>>> = _recipeCheckedIngredients.asStateFlow()
 
@@ -112,6 +123,8 @@ class DietPlannerViewModel(
     }
 
     init {
+        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        _isBengali.value = sharedPrefs.getBoolean("is_bengali", false)
         viewModelScope.launch {
             repository.preloadDefaultRemindersIfEmpty()
             repository.preloadDefaultRecipesIfEmpty()
@@ -454,10 +467,6 @@ class DietPlannerViewModel(
     val allExerciseLogs: StateFlow<List<ExerciseLogEntity>> = repository.getAllExerciseLogsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    // Language state: true for Bengali (default), false for English
-    private val _isBengali = MutableStateFlow(true)
-    val isBengali: StateFlow<Boolean> = _isBengali.asStateFlow()
-
     // Theme state: true for Dark Mode, false for Light Mode
     private val _isDarkTheme = MutableStateFlow(false)
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
@@ -499,7 +508,107 @@ class DietPlannerViewModel(
 
     // Login/account state (delegated to FirebaseAuthManager)
     fun toggleLanguage() {
-        _isBengali.value = !_isBengali.value
+        val newValue = !_isBengali.value
+        _isBengali.value = newValue
+        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("is_bengali", newValue).apply()
+    }
+
+    fun preloadAllDemoDataForUser(uid: String) {
+        viewModelScope.launch {
+            val sDate = selectedDate.value
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val cal = Calendar.getInstance()
+            
+            // 1. Water logs
+            repository.saveWaterLog(WaterLogEntity(date = sDate, amountMl = 1750))
+            
+            // 2. Weight logs for some recent dates (e.g. last 7 days)
+            for (i in 0..6) {
+                cal.time = Date()
+                cal.add(Calendar.DATE, -i)
+                val targetDate = sdf.format(cal.time)
+                val wt = 71.8 + (i * 0.28)
+                repository.saveWeightLog(wt, targetDate)
+            }
+            
+            // 3. MoodLogs for last 7 days
+            val moods = listOf("Excellent", "Good", "Normal", "Anxious", "Stressed", "Good", "Excellent")
+            val notes = listOf(
+                "Feeling super energetic today after morning stretching!",
+                "Great consistency, tracking water regularly.",
+                "Slightly tired from screen time, did deep breathing.",
+                "Felt anxious in afternoon but logged food correctly.",
+                "Busy meetings, nutrition targets on point nevertheless.",
+                "Active walking and proper diet schedule.",
+                "Felt completely balanced, good calories & happy mood."
+            )
+            val foods = listOf("Salad & Salmon", "Oatmeal with Blueberries", "Brown Rice & Lentils", "Fruits & Walnuts", "Grilled Chicken Breast", "Boiled Egg & Toast", "Vegetable Soup")
+            val activities = listOf("Walking", "Stretching", "Cardio Jogging", "Yoga", "Mindful Breathing", "Strength Exercise", "Meditation")
+            
+            for (i in 0..6) {
+                cal.time = Date()
+                cal.add(Calendar.DATE, -i)
+                val targetDate = sdf.format(cal.time)
+                repository.saveMoodLog(MoodLogEntity(
+                    userId = uid,
+                    date = targetDate,
+                    mood = moods[i],
+                    note = notes[i],
+                    food = foods[i],
+                    activity = activities[i]
+                ))
+            }
+            
+            // 4. Food logs for today (selectedDate)
+            repository.saveFoodLog(FoodLogEntity(
+                userId = uid,
+                date = sDate,
+                name = "Morning Breakfast: Oatmeal & Banana",
+                calories = 380,
+                protein = 12.0,
+                carbs = 65.0,
+                fat = 6.0
+            ))
+            repository.saveFoodLog(FoodLogEntity(
+                userId = uid,
+                date = sDate,
+                name = "Healthy Salad Lunch: Chicken & Quinoa",
+                calories = 540,
+                protein = 46.0,
+                carbs = 45.0,
+                fat = 12.0
+            ))
+            repository.saveFoodLog(FoodLogEntity(
+                userId = uid,
+                date = sDate,
+                name = "Healthy Dinner: Grilled Salmon & Broccoli",
+                calories = 420,
+                protein = 38.0,
+                carbs = 10.0,
+                fat = 18.0
+            ))
+            
+            // 5. Exercise logs for today (selectedDate)
+            repository.saveExerciseLog(ExerciseLogEntity(
+                date = sDate,
+                activity = "Cardio Jogging",
+                durationMin = 30,
+                caloriesBurned = 280
+            ))
+            repository.saveExerciseLog(ExerciseLogEntity(
+                date = sDate,
+                activity = "Yoga Stretching",
+                durationMin = 15,
+                caloriesBurned = 80
+            ))
+            
+            _eventMessage.value = if (_isBengali.value) {
+                "ডেমো প্লেগ্রাউন্ড ডাটা সফলভাবে লোড করা হয়েছে!"
+            } else {
+                "Sandbox demo playground data pre-seeded successfully!"
+            }
+        }
     }
 
     fun login() {
@@ -520,6 +629,7 @@ class DietPlannerViewModel(
         authManager.signUp(email, password) { success, error ->
             if (success) {
                 _eventMessage.value = if (_isBengali.value) "সফলভাবে রেজিস্ট্রেশন সম্পূর্ণ হয়েছে!" else "Signed up successfully!"
+                _showProfileSetupOnboarding.value = true
             }
             onResult(success, error)
         }

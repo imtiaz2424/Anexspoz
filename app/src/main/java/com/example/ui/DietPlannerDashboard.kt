@@ -53,6 +53,7 @@ import androidx.core.content.FileProvider
 fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
     val context = LocalContext.current
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+    val showProfileSetupOnboarding by viewModel.showProfileSetupOnboarding.collectAsState()
     val userProfile by viewModel.userProfile.collectAsState()
     val currentMealPlan by viewModel.currentMealPlan.collectAsState()
     val waterLog by viewModel.waterLog.collectAsState()
@@ -110,10 +111,29 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
         ANEXSOPZLoginScreen(
             isBengali = isBengali,
             onLogin = { email, password, onResult ->
-                viewModel.login(email, password, onResult)
+                viewModel.login(email, password) { success, error ->
+                    if (success && email == "guest@subecha.com") {
+                        viewModel.preloadAllDemoDataForUser("guest")
+                    }
+                    onResult(success, error)
+                }
             },
             onSignUp = { email, password, onResult ->
-                viewModel.signup(email, password, onResult)
+                viewModel.signup(email, password) { success, error ->
+                    if (success && email == "guest@subecha.com") {
+                        viewModel.preloadAllDemoDataForUser("guest")
+                    }
+                    onResult(success, error)
+                }
+            }
+        )
+    } else if (showProfileSetupOnboarding) {
+        UserProfileSetupScreen(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            onComplete = {
+                viewModel.setProfileSetupOnboardingShown(false)
+                currentTab = 2 // Redirect straight to Explore tab
             }
         )
     } else {
