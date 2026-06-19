@@ -121,8 +121,23 @@ fun ToolsTab(
             isBengali = isBengali
         )
 
+        // NUTRITIONAL DAILY SUMMARY WITH REAL-TIME MACRO-NUTRIENTS BREAKDOWN CHART
+        NutritionalDailySummary(
+            viewModel = viewModel,
+            userProfile = userProfile,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
+        )
+
         // RECHARTS WEEKLY MOOD, DIET & EXERCISE CORRELATION DASHBOARD
         MoodAnalysisDashboard(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // DAILY MOOD & HABIT JOURNALING CAPABILITY
+        DailyMoodJournal(
             viewModel = viewModel,
             isBengali = isBengali,
             modifier = Modifier.fillMaxWidth()
@@ -137,6 +152,20 @@ fun ToolsTab(
 
         // MOOD & HEALTH REPORT EXPORTER CAPABILITY
         MoodHealthReportExporter(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // LOCATION-BASED HEALTHY RESTAURANT DISCOVERY FINDER
+        HealthyRestaurantFinder(
+            viewModel = viewModel,
+            isBengali = isBengali,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // VOLUNTEER EMERGENCY DISTRESS SIGNAL BROADCASTER
+        VolunteerEmergencyAlert(
             viewModel = viewModel,
             isBengali = isBengali,
             modifier = Modifier.fillMaxWidth()

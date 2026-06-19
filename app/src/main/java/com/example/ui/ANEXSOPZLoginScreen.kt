@@ -29,8 +29,8 @@ fun ANEXSOPZLoginScreen(
     onLogin: (String, String, (Boolean, String?) -> Unit) -> Unit,
     onSignUp: (String, String, (Boolean, String?) -> Unit) -> Unit
 ) {
-    var email by remember { mutableStateOf("user@subecha.com") }
-    var password by remember { mutableStateOf("password123") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var isSignUpMode by remember { mutableStateOf(false) }
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }

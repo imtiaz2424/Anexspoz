@@ -37,6 +37,7 @@ fun MoodTrendChart(
     modifier: Modifier = Modifier
 ) {
     val moodLogs by viewModel.currentMoodLogs.collectAsState()
+    val foodLogs by viewModel.allFoodLogs.collectAsState()
     var selectedDayIndex by remember { mutableStateOf(6) } // Defaults to today (6)
 
     // Layout dates for past 7 days (index 0 is 6 days ago, index 6 is today)
@@ -56,7 +57,7 @@ fun MoodTrendChart(
     val dayFormatBn = remember { SimpleDateFormat("EEE", Locale("bn", "BD")) }
 
     // Map logs to exact past 7 days
-    val weeklyData = remember(moodLogs, isBengali) {
+    val weeklyData = remember(moodLogs, foodLogs, isBengali) {
         dateList.map { date ->
             val dateStr = ymdFormat.format(date)
             val label = if (isBengali) dayFormatBn.format(date) else dayFormatEn.format(date)
@@ -66,6 +67,12 @@ fun MoodTrendChart(
             val latestMoodLog = moodsOnDay.lastOrNull()
             val moodString = latestMoodLog?.mood ?: ""
             val moodNote = latestMoodLog?.note ?: ""
+
+            // Find food logs for this specific date
+            val foodsOnDay = foodLogs.filter { it.date == dateStr }
+            val hasFoodLog = foodsOnDay.isNotEmpty()
+            val hasMoodLog = moodString.isNotBlank()
+            val hasBoth = hasFoodLog && hasMoodLog
 
             // Mood score conversion (1 to 5 scale)
             val moodScore = when (moodString.lowercase(Locale.ROOT)) {
@@ -83,7 +90,9 @@ fun MoodTrendChart(
                 moodScore = moodScore,
                 moodString = moodString.ifBlank { "Neutral" },
                 moodNote = moodNote,
-                isLogged = moodString.isNotBlank()
+                isLogged = moodString.isNotBlank(),
+                hasBoth = hasBoth,
+                hasFoodLog = hasFoodLog
             )
         }
     }
@@ -151,12 +160,13 @@ fun MoodTrendChart(
 
             // Legend indicators
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 LegendIndicator(color = Color(0xFF00796B), label = if (isBengali) "মনোভাবের রেখাচিত্র" else "Mood Trend Line")
                 LegendIndicator(color = Color(0xFF80CBC4), label = if (isBengali) "বাস্তব রেকর্ডকৃত নোডস" else "Logged Trace Points")
+                LegendIndicator(color = Color(0xFF4CAF50), label = if (isBengali) "খাবার ও মনোভাব সংযোগ (🍲)" else "Food & Mood Synergy (🍲)")
             }
 
             // Canvas Line Chart Drawing
@@ -265,7 +275,7 @@ fun MoodTrendChart(
                         )
                     }
 
-                    // Overlay and highlight point nodes
+                     // Overlay and highlight point nodes
                     points.forEachIndexed { index, pt ->
                         val item = weeklyData[index]
 
@@ -289,6 +299,19 @@ fun MoodTrendChart(
                             radius = 3.dp.toPx(),
                             center = pt
                         )
+
+                        // Draw Food & Mood co-occurrence marker
+                        if (item.hasBoth) {
+                            drawContext.canvas.nativeCanvas.drawText(
+                                "🍲",
+                                pt.x,
+                                pt.y - 11.dp.toPx(),
+                                Paint().apply {
+                                    textSize = 10.sp.toPx()
+                                    textAlign = Paint.Align.CENTER
+                                }
+                            )
+                        }
 
                         // Plot X-Axis labels (Day of the week)
                         drawContext.canvas.nativeCanvas.drawText(
@@ -368,6 +391,21 @@ fun MoodTrendChart(
                             lineHeight = 15.sp
                         )
 
+                        if (item.hasBoth) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = if (isBengali) {
+                                    "🍲 খাদ্য ও মনোভাব সমীকরণ: আপনি এই দিনে খাবার এবং মনের ভাব উভয়ই ডায়েরি করেছেন! সুষম আহার ও নিয়মিত সময়সূচী মানসিক ক্লান্তি কমিয়ে আত্মবিশ্বাস বাড়ায়।"
+                                } else {
+                                    "🍲 Food & Mood Linked: Diet and mood logs are synchronized for this day! Regularly fueling your body helps cultivate cognitive focus and stable emotional energy."
+                                },
+                                fontSize = 11.sp,
+                                color = Color(0xFF2E7D32),
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 15.sp
+                            )
+                        }
+
                         if (item.moodNote.isNotBlank()) {
                             Box(
                                 modifier = Modifier
@@ -396,5 +434,7 @@ data class MoodTrendItem(
     val moodScore: Float,
     val moodString: String,
     val moodNote: String,
-    val isLogged: Boolean
+    val isLogged: Boolean,
+    val hasBoth: Boolean = false,
+    val hasFoodLog: Boolean = false
 )
