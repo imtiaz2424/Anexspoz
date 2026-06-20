@@ -43,7 +43,7 @@ fun DailyGoalTracker(
 ) {
     val context = LocalContext.current
     val sharedPrefs = remember(selectedDate) {
-        context.getSharedPreferences("suvecha_goals_$selectedDate", Context.MODE_PRIVATE)
+        context.getSharedPreferences("niljori_goals_$selectedDate", Context.MODE_PRIVATE)
     }
 
     val defaultGoals = remember {

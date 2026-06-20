@@ -144,11 +144,11 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
     val scope = rememberCoroutineScope()
 
     if (!isLoggedIn) {
-        ANEXSOPZLoginScreen(
+        NiljoriLoginScreen(
             isBengali = isBengali,
             onLogin = { email, password, onResult ->
                 viewModel.login(email, password) { success, error ->
-                    if (success && (email == "guest@anexsopz.com" || email == "guest@subecha.com")) {
+                    if (success && (email == "guest@niljori.com" || email == "guest@subecha.com")) {
                         viewModel.preloadAllDemoDataForUser("guest")
                     }
                     onResult(success, error)
@@ -156,7 +156,7 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
             },
             onSignUp = { email, password, onResult ->
                 viewModel.signup(email, password) { success, error ->
-                    if (success && (email == "guest@anexsopz.com" || email == "guest@subecha.com")) {
+                    if (success && (email == "guest@niljori.com" || email == "guest@subecha.com")) {
                         viewModel.preloadAllDemoDataForUser("guest")
                     }
                     onResult(success, error)
@@ -185,20 +185,20 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                             .fillMaxSize()
                             .padding(20.dp)
                     ) {
-                        // Header of Drawer with ANEXSOPZ Branding Logo
+                        // Header of Drawer with Niljori Branding Logo
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.padding(bottom = 24.dp, top = 12.dp)
                         ) {
-                            ANEXSOPZModernLogo(
+                            NiljoriModernLogo(
                                 modifier = Modifier.size(54.dp),
                                 showText = false,
                                 isBengali = isBengali
                             )
                             Column {
                                 Text(
-                                    text = "ANEXSOPZ Health",
+                                    text = "Niljori Health",
                                     fontWeight = FontWeight.Black,
                                     fontSize = 18.sp,
                                     color = MaterialTheme.colorScheme.primary,
@@ -370,15 +370,15 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                                 color = Color.Gray
                             )
                             Text(
-                                text = "support@anexsopz.com",
+                                text = "support@niljori.com",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2E7D32)
+                                color = Color(0xFF0288D1)
                             )
                         }
 
                         Text(
-                            text = "ANEXSOPZ Health Plus v2.1",
+                            text = "Niljori Health Plus v2.1",
                             fontSize = 9.sp,
                             color = Color.LightGray,
                             modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp)
@@ -407,8 +407,8 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
-                                contentDescription = "ANEXSOPZ Navigation Drawer",
-                                tint = Color(0xFF1E5E2F),
+                                contentDescription = "Niljori Navigation Drawer",
+                                tint = Color(0xFF01579B),
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -419,24 +419,24 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier.align(Alignment.Center)
                         ) {
-                            ANEXSOPZModernLogo(
+                            NiljoriModernLogo(
                                 modifier = Modifier.size(34.dp),
                                 showText = false,
                                 isBengali = isBengali
                             )
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    text = "ANEXSOPZ",
+                                    text = "Niljori",
                                     fontWeight = FontWeight.Black,
                                     fontSize = 16.sp,
-                                    color = Color(0xFF1E5E2F),
+                                    color = Color(0xFF01579B),
                                     letterSpacing = 0.5.sp
                                 )
                                 Text(
                                     text = if (isBengali) "সুস্থ জীবনের পথ" else "Path to Healthy Living",
                                     fontSize = 7.5.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF43A047),
+                                    color = Color(0xFF00ACC1),
                                     letterSpacing = 0.2.sp
                                 )
                             }
@@ -486,8 +486,8 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                                 Box {
                                     Icon(
                                         imageVector = Icons.Default.NotificationsActive,
-                                        contentDescription = "ANEXSOPZ Alerts",
-                                        tint = Color(0xFF1E5E2F),
+                                        contentDescription = "Niljori Alerts",
+                                        tint = Color(0xFF01579B),
                                         modifier = Modifier.size(20.dp)
                                     )
                                     Box(
@@ -501,14 +501,14 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                             }
 
                             if (showNotifications) {
-                                ANEXSOPZNotificationDialog(
+                                NiljoriNotificationDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showNotifications = false }
                                 )
                             }
 
                             if (showSearchDialog) {
-                                ANEXSOPZSearchDialog(
+                                NiljoriSearchDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showSearchDialog = false },
                                     onNavigateToTab = { tabIndex ->
@@ -519,37 +519,47 @@ fun DietPlannerDashboard(viewModel: DietPlannerViewModel) {
                             }
 
                             if (showTermsDialog) {
-                                ANEXSOPZTermsDialog(
+                                NiljoriTermsDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showTermsDialog = false }
                                 )
                             }
 
                             if (showPrivacyDialog) {
-                                ANEXSOPZPrivacyPolicyDialog(
+                                NiljoriPrivacyPolicyDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showPrivacyDialog = false }
                                 )
                             }
 
                             if (showAICoachDialog) {
-                                ANEXSOPZAICoachDialog(
+                                NiljoriAICoachDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showAICoachDialog = false }
                                 )
                             }
 
                             if (showRatingsDialog) {
-                                ANEXSOPZRatingsDialog(
+                                NiljoriRatingsDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showRatingsDialog = false }
                                 )
                             }
 
                             if (showAppInfoDialog) {
-                                ANEXSOPZAppInfoDialog(
+                                NiljoriAppInfoDialog(
                                     isBengali = isBengali,
                                     onDismiss = { showAppInfoDialog = false }
+                                )
+                            }
+
+                            if (showQuickLogDialog) {
+                                NiljoriQuickLogDialog(
+                                    viewModel = viewModel,
+                                    isBengali = isBengali,
+                                    onDismiss = { showQuickLogDialog = false }
+                                )
+                            }nDismiss = { showAppInfoDialog = false }
                                 )
                             }
 
@@ -957,7 +967,7 @@ fun MealPlanTab(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Beautiful application description in the main body
-            ANEXSOPZAppDescriptionCard(isBengali = isBengali)
+            NiljoriAppDescriptionCard(isBengali = isBengali)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -1034,7 +1044,7 @@ fun MealPlanTab(
             }
 
             if (showDailyInsightDialog) {
-                ANEXSOPZDailyInsightDialog(
+                NiljoriDailyInsightDialog(
                     isBengali = isBengali,
                     totalCalorieTarget = totalCalorieTarget,
                     consumedMealsCal = consumedCal,
@@ -1142,7 +1152,7 @@ fun MealPlanTab(
                 // Premium Week-long categorized checklist screen trigger
                 Button(
                     onClick = { onNavigateToShoppingList() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()

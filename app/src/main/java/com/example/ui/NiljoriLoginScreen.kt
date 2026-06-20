@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ANEXSOPZLoginScreen(
+fun NiljoriLoginScreen(
     isBengali: Boolean,
     onLogin: (String, String, (Boolean, String?) -> Unit) -> Unit,
     onSignUp: (String, String, (Boolean, String?) -> Unit) -> Unit
@@ -64,7 +64,7 @@ fun ANEXSOPZLoginScreen(
                 Text(
                     text = if (isBengali) "পাসওয়ার্ড ভুলে গেছেন?" else "Forgot Password?",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E5E2F)
+                    color = Color(0xFF01579B)
                 )
             },
             text = {
@@ -80,7 +80,7 @@ fun ANEXSOPZLoginScreen(
                         value = forgotEmail,
                         onValueChange = { forgotEmail = it },
                         label = { Text("Email Address") },
-                        placeholder = { Text("example@anexsopz.com") },
+                        placeholder = { Text("example@niljori.com") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
@@ -88,7 +88,7 @@ fun ANEXSOPZLoginScreen(
                     forgotPasswordMessage?.let { msg ->
                         Text(
                             text = msg,
-                            color = Color(0xFF2E7D32),
+                            color = Color(0xFF0288D1),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -106,7 +106,7 @@ fun ANEXSOPZLoginScreen(
                                 else "A simulated password reset link has been successfully sent!"
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
                 ) {
                     Text(if (isBengali) "রিসেট কোড পাঠান" else "Send Reset Link")
                 }
@@ -128,9 +128,9 @@ fun ANEXSOPZLoginScreen(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFE8F5E9), // Gentle green transition
+                        Color(0xFFE0F7FA), // Refreshing light blue mist
                         Color(0xFFFFFFFF),
-                        Color(0xFFE0F2F1)  // Teal accent bottom
+                        Color(0xFFB3E5FC)  // Sky blue bottom transition
                     )
                 )
             ),
@@ -145,7 +145,7 @@ fun ANEXSOPZLoginScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Animated main mascot logo of the brand
-            ANEXSOPZModernLogo(
+            NiljoriModernLogo(
                 modifier = Modifier.wrapContentSize().height(80.dp),
                 showText = true,
                 isBengali = isBengali
@@ -179,13 +179,13 @@ fun ANEXSOPZLoginScreen(
                             text = if (isBengali) "অ্যাকাউন্ট ভেরিফিকেশন" else "Verify Your Account",
                             fontWeight = FontWeight.Black,
                             fontSize = 18.sp,
-                            color = Color(0xFF1E5E2F),
+                            color = Color(0xFF01579B),
                             textAlign = TextAlign.Center
                         )
 
                         Text(
                             text = if (isBengali)
-                                "নতুন ANEXSOPZ অ্যাকাউন্টের তথ্যের সঠিকতা যাচাই করার জন্য আপনার ইমেইল ও ফোনে ওটিপি পাঠানো হয়েছে।"
+                                "নতুন নীলজরি অ্যাকাউন্টের তথ্যের সঠিকতা যাচাই করার জন্য আপনার ইমেইল ও ফোনে ওটিপি পাঠানো হয়েছে।"
                                 else "A confirmation link has been sent to your email. An SMS authorization code was also dispatched to your phone.",
                             fontSize = 11.sp,
                             color = Color.Gray,
@@ -196,7 +196,7 @@ fun ANEXSOPZLoginScreen(
 
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.fillMaxWidth().background(Color(0xFFF1F8E9), RoundedCornerShape(12.dp)).padding(12.dp)
+                            modifier = Modifier.fillMaxWidth().background(Color(0xFFE0F7FA), RoundedCornerShape(12.dp)).padding(12.dp)
                         ) {
                             Text(
                                 text = "Name: $fullName",
@@ -226,7 +226,7 @@ fun ANEXSOPZLoginScreen(
                                     "আপনার অ্যাকাউন্ট সফলভাবে ভেরিফাই করা হয়েছে! লগইন করুন।" 
                                     else "Email & Phone number verified successfully! Please log in now."
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.fillMaxWidth().height(46.dp)
                         ) {
@@ -242,7 +242,7 @@ fun ANEXSOPZLoginScreen(
                 Card(
                     shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    border = BorderStroke(1.dp, Color(0xFFC8E6C9)),
+                    border = BorderStroke(1.dp, Color(0xFFB3E5FC)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("login_card")
@@ -253,13 +253,13 @@ fun ANEXSOPZLoginScreen(
                     ) {
                         Text(
                             text = if (isSignUpMode) {
-                                if (isBengali) "নতুন ANEXSOPZ অ্যাকাউন্ট তৈরি" else "Create ANEXSOPZ Account"
+                                if (isBengali) "নতুন নীলজরি অ্যাকাউন্ট তৈরি" else "Create Niljori Account"
                             } else {
                                 if (isBengali) "আপনার অ্যাকাউন্টে প্রবেশ করুন" else "Welcome Back!"
                             },
                             fontWeight = FontWeight.Black,
                             fontSize = 18.sp,
-                            color = Color(0xFF1E5E2F),
+                            color = Color(0xFF01579B),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -361,8 +361,8 @@ fun ANEXSOPZLoginScreen(
                                 isEmailError = false 
                             },
                             label = { Text("Email Address") },
-                            placeholder = { Text("example@anexsopz.com") },
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF2E7D32)) },
+                            placeholder = { Text("example@niljori.com") },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF0288D1)) },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             isError = isEmailError,
@@ -383,7 +383,7 @@ fun ANEXSOPZLoginScreen(
                                 },
                                 label = { Text("Phone Number") },
                                 placeholder = { Text("+880 1712-345678") },
-                                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color(0xFF2E7D32)) },
+                                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color(0xFF0288D1)) },
                                 singleLine = true,
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                                 isError = isPhoneError,
@@ -401,7 +401,7 @@ fun ANEXSOPZLoginScreen(
                                 isPasswordError = false 
                             },
                             label = { Text("Account Password") },
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF2E7D32)) },
+                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF0288D1)) },
                             trailingIcon = {
                                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                     Icon(
@@ -437,7 +437,7 @@ fun ANEXSOPZLoginScreen(
                                         text = if (isBengali) "পাসওয়ার্ড ভুলে গেছেন?" else "Forgot Password?",
                                         fontSize = 11.5.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF1B5E20)
+                                        color = Color(0xFF0288D1)
                                     )
                                 }
                             }
@@ -455,12 +455,12 @@ fun ANEXSOPZLoginScreen(
                                 Checkbox(
                                     checked = isTermsAgreed,
                                     onCheckedChange = { isTermsAgreed = it },
-                                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF2E7D32))
+                                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF0288D1))
                                 )
                                 Text(
                                     text = if (isBengali)
-                                        "আমি ANEXSOPZ ব্যবহারের সব নীতিমালা ও শর্তাবলীতে সম্মতি জানাচ্ছি"
-                                        else "I agree to all ANEXSOPZ Terms, Conditions and Privacy policy.",
+                                        "আমি নীলজরি ব্যবহারের সব নীতিমালা ও শর্তাবলীতে সম্মতি জানাচ্ছি"
+                                        else "I agree to all Niljori Terms, Conditions and Privacy policy.",
                                     fontSize = 10.5.sp,
                                     color = Color.DarkGray,
                                     lineHeight = 14.sp
@@ -630,7 +630,7 @@ fun ANEXSOPZLoginScreen(
                                 if (isBengali) "রেজিস্ট্রেশন করুন" else "Sign Up Now"
                             },
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1B5E20),
+                            color = Color(0xFF0288D1),
                             fontSize = 12.sp
                         )
                     }
@@ -641,10 +641,10 @@ fun ANEXSOPZLoginScreen(
                     onClick = {
                         isLoading = true
                         successMessage = null
-                        onLogin("guest@anexsopz.com", "password123") { success, _ ->
+                        onLogin("guest@niljori.com", "password123") { success, _ ->
                             isLoading = false
                             if (!success) {
-                                onSignUp("guest@anexsopz.com", "password123") { s, _ ->
+                                onSignUp("guest@niljori.com", "password123") { s, _ ->
                                     if (!s) errorMessage = "Guest bypass offline failure."
                                 }
                             }
@@ -656,7 +656,7 @@ fun ANEXSOPZLoginScreen(
                         text = if (isBengali) "গেস্ট মোডে প্রবেশ করুন (Offline Sandbox)" else "Continue in Sandbox Offline Mode",
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
-                        color = Color(0xFF00796B)
+                        color = Color(0xFF00ACC1)
                     )
                 }
             }

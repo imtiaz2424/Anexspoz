@@ -80,7 +80,7 @@ fun ProfileSetupView(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.padding(vertical = 12.dp)
         ) {
-            ANEXSOPZModernLogo(
+            NiljoriModernLogo(
                 modifier = Modifier.size(64.dp),
                 showText = true,
                 isBengali = isBengali
@@ -339,7 +339,7 @@ fun ExploreTab(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (isBengali) "ANEXSOPZ এক্সপ্লোর ও ড্যাশবোর্ড" else "ANEXSOPZ Exploration Center",
+                        text = if (isBengali) "নীলজরি এক্সপ্লোর ও ড্যাশবোর্ড" else "Niljori Exploration Center",
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                         color = Color(0xFF5D4037)
@@ -1409,7 +1409,7 @@ fun ProfileEditTab(
         // Bio Section
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
-                text = if (isBengali) "স্বাস্থ্য অভিযাত্রী (Premium Unit)" else "ANEXSOPZ Wellness Champion",
+                text = if (isBengali) "স্বাস্থ্য অভিযাত্রী (Premium Unit)" else "Niljori Wellness Champion",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = Color(0xFF1E5E2F)
@@ -1468,7 +1468,7 @@ fun ProfileEditTab(
                 onClick = {
                     val sendIntent = android.content.Intent().apply {
                         action = android.content.Intent.ACTION_SEND
-                        putExtra(android.content.Intent.EXTRA_TEXT, "Log your daily meals, track hydration streaks, and view dynamic AI insights in ANEXSOPZ Health Plus! Download now.")
+                        putExtra(android.content.Intent.EXTRA_TEXT, "Log your daily meals, track hydration streaks, and view dynamic AI insights in Niljori Health Plus! Download now.")
                         type = "text/plain"
                     }
                     val shareIntent = android.content.Intent.createChooser(sendIntent, null)
@@ -1485,8 +1485,8 @@ fun ProfileEditTab(
             )
 
             AccountOptionRow(
-                emoji = "ℹ️",
-                titleEn = "About ANEXSOPZ Health",
+                emoji = "ℹ",
+                titleEn = "About Niljori Health",
                 titleBn = "অ্যাপ পরিচিতি ও আমাদের তথ্য",
                 isBengali = isBengali,
                 onClick = { showAboutUsDialog = true }
@@ -1847,8 +1847,8 @@ fun ProfileEditTab(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("📍 **HQ**: House 24, Road 12, Dhanmondi, Dhaka, Bangladesh", fontSize = 12.sp)
-                    Text("📧 **Support Link**: healthplus@anexsopz.com", fontSize = 12.sp)
-                    Text("📞 **Corporate Helpline**: +880 1712-ANEXSOPZ", fontSize = 12.sp)
+                    Text("📧 **Support Link**: healthplus@niljori.com", fontSize = 12.sp)
+                    Text("📞 **Corporate Helpline**: +880 1712-NILJORI", fontSize = 12.sp)
                     Text("🕒 **Response SLA**: Within 12-24 Hours", fontSize = 11.sp, color = Color.Gray)
                 }
             },
@@ -1928,12 +1928,12 @@ fun ProfileEditTab(
     if (showAboutUsDialog) {
         AlertDialog(
             onDismissRequest = { showAboutUsDialog = false },
-            title = { Text(if (isBengali) "ℹ️ সংস্করণ ও পরিচিতি" else "ANEXSOPZ App Genealogy") },
+            title = { Text(if (isBengali) "ℹ️ সংস্করণ ও পরিচিতি" else "Niljori App Genealogy") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("**App Name**: ANEXSOPZ Health Plus", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text("**App Name**: Niljori Health Plus", fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     Text("**Official Version**: v2.1.0-Release", fontSize = 11.sp)
-                    Text("**Developer**: ANEXSOPZ Technologies Group", fontSize = 11.sp)
+                    Text("**Developer**: Niljori Technologies Group", fontSize = 11.sp)
                     Text("Licensed and audited securely. All nutritional values correspond to modern WHO standards & local dietary guidelines.", fontSize = 11.sp, color = Color.DarkGray)
                 }
             },

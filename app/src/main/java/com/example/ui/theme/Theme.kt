@@ -14,32 +14,32 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme =
   darkColorScheme(
-    primary = Color(0xFF81C784),      // High visibility light green for dark mode
-    secondary = Color(0xFFA5D6A7),
-    tertiary = Color(0xFFC8E6C9),
-    background = Color(0xFF121212),     // True deep slate theme backgrounds
-    surface = Color(0xFF1E1E1E),
-    onPrimary = Color(0xFF1B5E20),
-    onSecondary = Color(0xFF1B5E20),
-    onBackground = Color(0xFFE0E0E0),
-    onSurface = Color(0xFFEEEEEE),
-    primaryContainer = Color(0xFF2E7D32),
-    onPrimaryContainer = Color(0xFFE8F5E9)
+    primary = Color(0xFF4FC3F7),      // Bright Radiant Sky Blue for dark mode
+    secondary = Color(0xFF80DEEA),    // Waterfall Turquoise/Aqua accent
+    tertiary = Color(0xFF29B6F6),     // Vivid Sea Blue
+    background = Color(0xFF0B132B),   // Dark abyssal/midnight ocean background
+    surface = Color(0xFF1C2541),      // Deep navy oceanic card surface
+    onPrimary = Color(0xFF01579B),    // Deepest sea contrast text
+    onSecondary = Color(0xFF004D40),  // Deep forest/waterfall teal text
+    onBackground = Color(0xFFE0F7FA), // Soft water-spray white
+    onSurface = Color(0xFFE0F7FA),    // Soft water-spray white
+    primaryContainer = Color(0xFF0288D1),
+    onPrimaryContainer = Color(0xFFE0F7FA)
   )
 
 private val LightColorScheme =
   lightColorScheme(
-    primary = Color(0xFF2E7D32),       // Signature ANEXSOPZ Green
-    secondary = Color(0xFF4CAF50),
-    tertiary = Color(0xFF81C784),
-    background = Color(0xFFFAFAFA),    // Clean paper-white backgrounds
-    surface = Color(0xFFFFFFFF),
+    primary = Color(0xFF0288D1),       // Signature Deep Sea Blue
+    secondary = Color(0xFF00ACC1),     // Refreshing Waterfall Turquoise
+    tertiary = Color(0xFF29B6F6),      // Vivid Sky Blue
+    background = Color(0xFFF0F8FF),    // Alice Blue - extremely soft flowing water-colored background
+    surface = Color(0xFFFFFFFF),       // Clean sparkling foam surface
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onBackground = Color(0xFF212121),
-    onSurface = Color(0xFF212121),
-    primaryContainer = Color(0xFFE8F5E9),
-    onPrimaryContainer = Color(0xFF2E7D32)
+    onBackground = Color(0xFF01579B),  // Dark sea-blue text
+    onSurface = Color(0xFF0D1B2A),     // Navy-black for high legibility
+    primaryContainer = Color(0xFFE0F7FA), // Refreshing cool mist container
+    onPrimaryContainer = Color(0xFF006064)
   )
 
 @Composable

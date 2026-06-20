@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         val viewModel = ViewModelProvider(this, viewModelFactory)[DietPlannerViewModel::class.java]
 
         // Load theme configurations from persistent SharedPreferences
-        val sharedPrefs = getSharedPreferences("suvecha_settings", MODE_PRIVATE)
+        val sharedPrefs = getSharedPreferences("niljori_settings", MODE_PRIVATE)
         val isSavedDark = sharedPrefs.getBoolean("dark_mode", false)
         viewModel.setInitialDarkTheme(isSavedDark)
 

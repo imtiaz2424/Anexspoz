@@ -160,7 +160,7 @@ class DietPlannerViewModel(
 
     fun saveLocationPref(value: String) {
         _locationPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putString("location_pref", value).apply()
     }
 
@@ -170,7 +170,7 @@ class DietPlannerViewModel(
 
     fun saveFontSizePref(value: String) {
         _fontSizePref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putString("font_size_pref", value).apply()
     }
 
@@ -180,7 +180,7 @@ class DietPlannerViewModel(
 
     fun saveKeepScreenOnPref(value: Boolean) {
         _keepScreenOnPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("keep_screen_on_pref", value).apply()
     }
 
@@ -190,7 +190,7 @@ class DietPlannerViewModel(
 
     fun saveHomeDesignPref(value: String) {
         _homeDesignPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putString("home_design_pref", value).apply()
     }
 
@@ -200,7 +200,7 @@ class DietPlannerViewModel(
 
     fun saveNotificationsEnabledPref(value: Boolean) {
         _notificationsEnabledPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("notifications_enabled_pref", value).apply()
     }
 
@@ -210,7 +210,7 @@ class DietPlannerViewModel(
 
     fun saveOneNotificationDayPref(value: Boolean) {
         _oneNotificationDayPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("one_notification_day_pref", value).apply()
     }
 
@@ -220,7 +220,7 @@ class DietPlannerViewModel(
 
     fun saveShakeToNotifyPref(value: Boolean) {
         _shakeToNotifyPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("shake_to_notify_pref", value).apply()
     }
 
@@ -230,12 +230,12 @@ class DietPlannerViewModel(
 
     fun saveHomeCardOrderPref(value: String) {
         _homeCardOrderPref.value = value
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putString("home_card_order_pref", value).apply()
     }
 
     init {
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         _isBengali.value = sharedPrefs.getBoolean("is_bengali", false)
         _locationPref.value = sharedPrefs.getString("location_pref", "Dhaka, Bangladesh") ?: "Dhaka, Bangladesh"
         _fontSizePref.value = sharedPrefs.getString("font_size_pref", "Medium") ?: "Medium"
@@ -626,7 +626,7 @@ class DietPlannerViewModel(
 
     fun saveTargetWeight(context: Context, weight: Double) {
         _targetWeight.value = weight
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putFloat("target_weight", weight.toFloat()).apply()
         _eventMessage.value = if (_isBengali.value) {
             "আপনার লক্ষ্য ওজন সেট করা হয়েছে: $weight কেজি!"
@@ -638,7 +638,7 @@ class DietPlannerViewModel(
     fun toggleTheme(context: Context) {
         val newValue = !_isDarkTheme.value
         _isDarkTheme.value = newValue
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("dark_mode", newValue).apply()
         _eventMessage.value = if (_isBengali.value) {
             if (newValue) "ডার্ক মোড সক্রিয় করা হয়েছে!" else "লাইট মোড সক্রিয় করা হয়েছে!"
@@ -651,7 +651,7 @@ class DietPlannerViewModel(
     fun toggleLanguage() {
         val newValue = !_isBengali.value
         _isBengali.value = newValue
-        val sharedPrefs = context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean("is_bengali", newValue).apply()
     }
 
@@ -767,7 +767,7 @@ class DietPlannerViewModel(
 
     fun login() {
         // Fallback for simple calls if any exist
-        login("user@anexsopz.com", "password123") { _, _ -> }
+        login("user@niljori.com", "password123") { _, _ -> }
     }
 
     fun login(email: String, password: String, onResult: (Boolean, String?) -> Unit) {

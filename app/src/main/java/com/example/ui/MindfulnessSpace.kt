@@ -60,7 +60,7 @@ fun MindfulnessSpace(
 
     // Interactive target tracker sessions list
     val sharedPrefs = remember {
-        context.getSharedPreferences("suvecha_mindfulness_logs", Context.MODE_PRIVATE)
+        context.getSharedPreferences("niljori_mindfulness_logs", Context.MODE_PRIVATE)
     }
     var mindfulnessLogs by remember {
         mutableStateOf(loadMindfulnessLogs(context))
@@ -521,7 +521,7 @@ fun AchievementBanner(
 private fun loadMindfulnessLogs(context: Context): List<Int> {
     val list = mutableListOf<Int>()
     try {
-        val sharedPrefs = context.getSharedPreferences("suvecha_mindfulness_logs", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_mindfulness_logs", Context.MODE_PRIVATE)
         val jsonStr = sharedPrefs.getString("calm_mins_arr", null) ?: return list
         val array = JSONArray(jsonStr)
         for (i in 0 until array.length()) {
@@ -535,7 +535,7 @@ private fun saveMindfulnessLogs(context: Context, list: List<Int>) {
     try {
         val array = JSONArray()
         list.forEach { array.put(it) }
-        val sharedPrefs = context.getSharedPreferences("suvecha_mindfulness_logs", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_mindfulness_logs", Context.MODE_PRIVATE)
         sharedPrefs.edit().putString("calm_mins_arr", array.toString()).apply()
     } catch (_: Exception) {}
 }

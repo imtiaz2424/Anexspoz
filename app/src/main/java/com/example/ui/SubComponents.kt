@@ -171,7 +171,7 @@ fun DateSelectorHeader(
 }
 
 @Composable
-fun ANEXSOPZAppDescriptionCard(isBengali: Boolean) {
+fun NiljoriAppDescriptionCard(isBengali: Boolean) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -180,10 +180,10 @@ fun ANEXSOPZAppDescriptionCard(isBengali: Boolean) {
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Text(
-                text = if (isBengali) "ANEXSOPZ এর প্রধান লক্ষ্য" else "About ANEXSOPZ Health Tracker",
+                text = if (isBengali) "নীলজরি এর প্রধান লক্ষ্য" else "About Niljori Health Tracker",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.5.sp,
-                color = Color(0xFF1E5E2F),
+                color = Color(0xFF01579B),
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             Text(
@@ -224,7 +224,7 @@ fun ProfileMiniCard(userProfile: UserProfileEntity) {
                     text = "User Profile: ${userProfile.gender} (${userProfile.age} yo)",
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.5.sp,
-                    color = Color(0xFF1E5E2F)
+                    color = Color(0xFF01579B)
                 )
                 Text(
                     text = "Weight Goal: ${userProfile.goal} | Target Cal: ${userProfile.dailyCalorieTarget} kcal",
@@ -288,7 +288,7 @@ fun NoMealPlanPlaceholderCard(
                 text = if (isBengali) "কোনো ডায়েট প্ল্যান পাওয়া যায়নি!" else "No Customized Plan Found!",
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
-                color = Color(0xFF1E5E2F)
+                color = Color(0xFF01579B)
             )
             Text(
                 text = if (isBengali)
@@ -303,7 +303,7 @@ fun NoMealPlanPlaceholderCard(
 
             Button(
                 onClick = onGenerate,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -424,7 +424,7 @@ fun MealCardItem(
                     Checkbox(
                         checked = isDone,
                         onCheckedChange = onDoneChange,
-                        colors = CheckboxDefaults.colors(checkedColor = Color(0xFF2E7D32)),
+                        colors = CheckboxDefaults.colors(checkedColor = Color(0xFF0288D1)),
                         modifier = Modifier.testTag("meal_checkbox_${categoryName.lowercase(Locale.ROOT)}")
                     )
                     Column {
@@ -438,14 +438,14 @@ fun MealCardItem(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(Color(0xFFE8F5E9))
+                                    .background(Color(0xFFE0F7FA))
                                     .padding(horizontal = 4.dp, vertical = 1.dp)
                             ) {
                                 Text(
                                     text = "NEXT UP",
                                     fontSize = 8.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF2E7D32)
+                                    color = Color(0xFF0288D1)
                                 )
                             }
                         }
@@ -455,14 +455,14 @@ fun MealCardItem(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFFE8F5E9))
+                        .background(Color(0xFFE0F7FA))
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = "$calories kcal",
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
-                        color = Color(0xFF2E7D32)
+                        color = Color(0xFF0288D1)
                     )
                 }
             }
@@ -527,7 +527,7 @@ fun LocalShoppingListCard(viewModel: DietPlannerViewModel, isBengali: Boolean) {
                 text = if (isBengali) "আজকের রান্নার উপকরণসমূহ" else "Auto-generated Cooking Ingredients Checklist",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.5.sp,
-                color = Color(0xFF1E5E2F),
+                color = Color(0xFF01579B),
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
@@ -555,7 +555,7 @@ fun LocalShoppingListCard(viewModel: DietPlannerViewModel, isBengali: Boolean) {
                                 Icon(
                                     imageVector = if (item.isChecked) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                     contentDescription = null,
-                                    tint = if (item.isChecked) Color(0xFF2E7D32) else Color.Gray,
+                                    tint = if (item.isChecked) Color(0xFF0288D1) else Color.Gray,
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Text(
@@ -577,7 +577,7 @@ fun LocalShoppingListCard(viewModel: DietPlannerViewModel, isBengali: Boolean) {
                             text = if (isBengali) "...ও আরও ${shoppingItems.size - 5} টি সামগ্রী বাজার ফর্দে রয়েছে" else "... and ${shoppingItems.size - 5} more items",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF2E7D32),
+                            color = Color(0xFF0288D1),
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
@@ -592,10 +592,10 @@ fun LocalShoppingListCard(viewModel: DietPlannerViewModel, isBengali: Boolean) {
 // ==========================================
 
 @Composable
-fun ANEXSOPZNotificationDialog(isBengali: Boolean, onDismiss: () -> Unit) {
+fun NiljoriNotificationDialog(isBengali: Boolean, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isBengali) "রিয়েল-টাইম নোটিফিকেশন" else "ANEXSOPZ Live Alerts", fontWeight = FontWeight.Bold) },
+        title = { Text(if (isBengali) "রিয়েল-টাইম নোটিফিকেশন" else "Niljori Live Alerts", fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
@@ -624,7 +624,7 @@ fun ANEXSOPZNotificationDialog(isBengali: Boolean, onDismiss: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ANEXSOPZSearchDialog(
+fun NiljoriSearchDialog(
     isBengali: Boolean,
     onDismiss: () -> Unit,
     onNavigateToTab: (Int) -> Unit
@@ -744,7 +744,7 @@ fun ANEXSOPZSearchDialog(
 }
 
 @Composable
-fun ANEXSOPZTermsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
+fun NiljoriTermsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (isBengali) "ব্যবহারের শর্তাবলী" else "Terms & Conditions", fontWeight = FontWeight.Bold) },
@@ -754,7 +754,7 @@ fun ANEXSOPZTermsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "ANEXSOPZ Health Tracker provides customized nutritional suggestions under automated algorithm baselines. These outputs should not be replaced by standard clinical medical diagnostics.",
+                    text = "Niljori Health Tracker provides customized nutritional suggestions under automated algorithm baselines. These outputs should not be replaced by standard clinical medical diagnostics.",
                     fontSize = 12.sp,
                     color = Color.DarkGray
                 )
@@ -774,7 +774,7 @@ fun ANEXSOPZTermsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ANEXSOPZPrivacyPolicyDialog(isBengali: Boolean, onDismiss: () -> Unit) {
+fun NiljoriPrivacyPolicyDialog(isBengali: Boolean, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (isBengali) "প্রাইভেসি পলিসি" else "Privacy Policy", fontWeight = FontWeight.Bold) },
@@ -784,7 +784,7 @@ fun ANEXSOPZPrivacyPolicyDialog(isBengali: Boolean, onDismiss: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "ANEXSOPZ values your personal and biological weights records. We guarantee 100% security with no servers-side leaks.",
+                    text = "Niljori values your personal and biological weights records. We guarantee 100% security with no servers-side leaks.",
                     fontSize = 12.sp,
                     color = Color.DarkGray
                 )
@@ -804,10 +804,10 @@ fun ANEXSOPZPrivacyPolicyDialog(isBengali: Boolean, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ANEXSOPZAICoachDialog(isBengali: Boolean, onDismiss: () -> Unit) {
+fun NiljoriAICoachDialog(isBengali: Boolean, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isBengali) "স্মার্ট এআই কোচ" else "ANEXSOPZ Lifestyle Coach", fontWeight = FontWeight.Bold) },
+        title = { Text(if (isBengali) "স্মার্ট এআই কোচ" else "Niljori Lifestyle Coach", fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
@@ -817,7 +817,7 @@ fun ANEXSOPZAICoachDialog(isBengali: Boolean, onDismiss: () -> Unit) {
                 Text(
                     text = "💡 Advice for today: Complete at least 2.5 Liters of hydration to detoxify cellular systems properly.",
                     fontSize = 12.sp,
-                    color = Color(0xFF2E7D32),
+                    color = Color(0xFF0288D1),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -831,7 +831,7 @@ fun ANEXSOPZAICoachDialog(isBengali: Boolean, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ANEXSOPZRatingsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
+fun NiljoriRatingsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
     var rating by remember { mutableStateOf(5) }
     val context = LocalContext.current
 
@@ -878,7 +878,7 @@ fun ANEXSOPZRatingsDialog(isBengali: Boolean, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ANEXSOPZAppInfoDialog(isBengali: Boolean, onDismiss: () -> Unit) {
+fun NiljoriAppInfoDialog(isBengali: Boolean, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (isBengali) "অ্যাপ নির্দেশিকা ও ম্যানুয়াল" else "Application Information Manual", fontWeight = FontWeight.Bold) },
@@ -888,7 +888,7 @@ fun ANEXSOPZAppInfoDialog(isBengali: Boolean, onDismiss: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "ANEXSOPZ Diet Planner helps you maintain stable metabolic states. Key functions include:",
+                    text = "Niljori Diet Planner helps you maintain stable metabolic states. Key functions include:",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -908,7 +908,7 @@ fun ANEXSOPZAppInfoDialog(isBengali: Boolean, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ANEXSOPZDailyInsightDialog(
+fun NiljoriDailyInsightDialog(
     isBengali: Boolean,
     totalCalorieTarget: Int,
     consumedMealsCal: Int,
@@ -950,7 +950,7 @@ fun ANEXSOPZDailyInsightDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFF1F8E9))
+                        .background(Color(0xFFE0F7FA))
                         .padding(12.dp)
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -958,7 +958,7 @@ fun ANEXSOPZDailyInsightDialog(
                             text = if (isBengali) "ক্যালোরি অ্যাকাউন্টাবিমিটি (Calorie Log):" else "Calorie Logging Stats:",
                             fontWeight = FontWeight.Bold,
                             fontSize = 12.sp,
-                            color = Color(0xFF1E5E2F)
+                            color = Color(0xFF01579B)
                         )
                         Text(
                             text = "• Target Baseline: $totalCalorieTarget kcal\n• Meals Logged Check: $consumedMealsCal kcal\n• Extra Manual Snacks: $extraSnacksCal kcal\n• Workout Burnt: -$workoutBurntCal kcal\n\n👉 Net Remaining: ${(totalCalorieTarget - netCalories).coerceAtLeast(0)} kcal",
@@ -1053,13 +1053,13 @@ fun sharePdf(context: Context, file: File) {
 
 fun shareMealPlanToSocial(context: Context, mealPlan: MealPlanEntity) {
     val shareText = """
-        My Healthy AI Diet Plan of the Day (${mealPlan.date}) via ANEXSOPZ:
+        My Healthy AI Diet Plan of the Day (${mealPlan.date}) via Niljori:
         - Breakfast: ${mealPlan.breakfast} (${mealPlan.breakfastCal} kcal)
         - Lunch: ${mealPlan.lunch} (${mealPlan.lunchCal} kcal)
         - Dinner: ${mealPlan.dinner} (${mealPlan.dinnerCal} kcal)
         - Baseline Target Calorie: ${mealPlan.calorieTarget} kcal
         
-        Stay fit and eat smart! Download ANEXSOPZ App in Android now.
+        Stay fit and eat smart! Download Niljori App in Android now.
     """.trimIndent()
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
@@ -1070,7 +1070,7 @@ fun shareMealPlanToSocial(context: Context, mealPlan: MealPlanEntity) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ANEXSOPZQuickLogDialog(
+fun NiljoriQuickLogDialog(
     viewModel: DietPlannerViewModel,
     isBengali: Boolean,
     onDismiss: () -> Unit

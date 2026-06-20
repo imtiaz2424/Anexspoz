@@ -1186,13 +1186,13 @@ fun ToolsTab(
                     }
 
                     var isMasterNotificationEnabled by remember {
-                        mutableStateOf(context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE).getBoolean("notif_master", true))
+                        mutableStateOf(context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE).getBoolean("notif_master", true))
                     }
                     var isHydrationIntervalEnabled by remember {
-                        mutableStateOf(context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE).getBoolean("notif_hydration", true))
+                        mutableStateOf(context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE).getBoolean("notif_hydration", true))
                     }
                     var isMindfulnessEveningEnabled by remember {
-                        mutableStateOf(context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE).getBoolean("notif_mindful", true))
+                        mutableStateOf(context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE).getBoolean("notif_mindful", true))
                     }
 
                     Column(
@@ -1225,7 +1225,7 @@ fun ToolsTab(
                                 checked = isMasterNotificationEnabled,
                                 onCheckedChange = { value ->
                                     isMasterNotificationEnabled = value
-                                    context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE).edit().putBoolean("notif_master", value).apply()
+                                    context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE).edit().putBoolean("notif_master", value).apply()
                                     val msg = if (value) {
                                         if (isBengali) "সিস্টেম পুশ নোটিফিকেশন চালু করা হলো!" else "Push notifications activated successfully!"
                                     } else {
@@ -1264,7 +1264,7 @@ fun ToolsTab(
                                 enabled = isMasterNotificationEnabled,
                                 onCheckedChange = { value ->
                                     isHydrationIntervalEnabled = value
-                                    context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE).edit().putBoolean("notif_hydration", value).apply()
+                                    context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE).edit().putBoolean("notif_hydration", value).apply()
                                     val msg = if (value) {
                                         if (isBengali) "২-ঘন্টা পর পর পানির রিমাইন্ডার সেট করা হলো!" else "Hydration alarms scheduled every 2 hours!"
                                     } else {
@@ -1303,7 +1303,7 @@ fun ToolsTab(
                                 enabled = isMasterNotificationEnabled,
                                 onCheckedChange = { value ->
                                     isMindfulnessEveningEnabled = value
-                                    context.getSharedPreferences("suvecha_settings", Context.MODE_PRIVATE).edit().putBoolean("notif_mindful", value).apply()
+                                    context.getSharedPreferences("niljori_settings", Context.MODE_PRIVATE).edit().putBoolean("notif_mindful", value).apply()
                                     val msg = if (value) {
                                         if (isBengali) "সন্ধ্যা ৮ টায় মনের যত্ন নোটিফিকেশন সেট করা হলো!" else "Self-care check-in scheduled for 8:00 PM!"
                                     } else {

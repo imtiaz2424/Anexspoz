@@ -50,7 +50,7 @@ fun LocalSOSContacts(
 ) {
     val context = LocalContext.current
     val sharedPrefs = remember {
-        context.getSharedPreferences("suvecha_sos_contacts", Context.MODE_PRIVATE)
+        context.getSharedPreferences("niljori_sos_contacts", Context.MODE_PRIVATE)
     }
 
     // Baseline national emergencies
@@ -381,7 +381,7 @@ fun LocalSOSContacts(
 private fun loadCustomContacts(context: Context): List<EmergencyContact> {
     val list = mutableListOf<EmergencyContact>()
     try {
-        val sharedPrefs = context.getSharedPreferences("suvecha_sos_contacts", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_sos_contacts", Context.MODE_PRIVATE)
         val jsonStr = sharedPrefs.getString("custom_contacts_list", null) ?: return list
         val array = JSONArray(jsonStr)
         for (i in 0 until array.length()) {
@@ -419,7 +419,7 @@ private fun saveCustomContacts(context: Context, list: List<EmergencyContact>) {
             }
             array.put(obj)
         }
-        val sharedPrefs = context.getSharedPreferences("suvecha_sos_contacts", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_sos_contacts", Context.MODE_PRIVATE)
         sharedPrefs.edit().putString("custom_contacts_list", array.toString()).apply()
     } catch (_: Exception) {}
 }

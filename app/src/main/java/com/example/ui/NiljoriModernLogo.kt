@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ANEXSOPZModernLogo(
+fun NiljoriModernLogo(
     modifier: Modifier = Modifier,
     showText: Boolean = false,
     isBengali: Boolean = false
@@ -58,7 +58,7 @@ fun ANEXSOPZModernLogo(
                 .clip(CircleShape)
                 .background(
                     Brush.radialGradient(
-                        colors = listOf(Color(0xFFE8F5E9), Color(0xFFC8E6C9), Color(0xFFE0F2F1))
+                        colors = listOf(Color(0xFFE0F7FA), Color(0xFFB3E5FC), Color(0xFFE0F2F1))
                     )
                 ),
             contentAlignment = Alignment.Center
@@ -66,13 +66,13 @@ fun ANEXSOPZModernLogo(
             Canvas(modifier = Modifier.size(54.dp)) {
                 // Background subtle ring representing circadian rhythms & tracker cycles
                 drawCircle(
-                    color = Color(0xFF81C784).copy(alpha = 0.35f),
+                    color = Color(0xFF29B6F6).copy(alpha = 0.35f),
                     style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
                 )
 
                 // Animated metabolic pulse ring
                 drawArc(
-                    color = Color(0xFF009688),
+                    color = Color(0xFF00ACC1),
                     startAngle = rotation,
                     sweepAngle = 140f,
                     useCenter = false,
@@ -80,7 +80,7 @@ fun ANEXSOPZModernLogo(
                 )
 
                 drawArc(
-                    color = Color(0xFFFFB300),
+                    color = Color(0xFF0288D1),
                     startAngle = rotation + 180f,
                     sweepAngle = 90f,
                     useCenter = false,
@@ -106,20 +106,20 @@ fun ANEXSOPZModernLogo(
                 drawPath(
                     path = leafPath.asComposePath(),
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF2E7D32), Color(0xFF004D40))
+                        colors = listOf(Color(0xFF0288D1), Color(0xFF0D1B2A))
                     )
                 )
 
                 // Leaf middle vein for high detail look
                 drawLine(
-                    color = Color(0xFFA5D6A7).copy(alpha = 0.5f),
+                    color = Color(0xFF80DEEA).copy(alpha = 0.5f),
                     start = androidx.compose.ui.geometry.Offset(size.width * 0.5f, size.height * 0.22f),
                     end = androidx.compose.ui.geometry.Offset(size.width * 0.5f, size.height * 0.78f),
                     strokeWidth = 2.dp.toPx()
                 )
 
                 // Leaf side veins branching off beautifully
-                val veinColor = Color(0xFFA5D6A7).copy(alpha = 0.6f)
+                val veinColor = Color(0xFF80DEEA).copy(alpha = 0.6f)
                 val veinProgressions = listOf(0.35f, 0.45f, 0.55f, 0.65f)
                 for (p in veinProgressions) {
                     val y = size.height * p
@@ -139,9 +139,9 @@ fun ANEXSOPZModernLogo(
                     )
                 }
 
-                // Small shiny gold spark representing healthy cells & longevity energy
+                // Small shiny blue spark representing healthy energy
                 drawCircle(
-                    color = Color(0xFFFFD54F),
+                    color = Color(0xFF29B6F6),
                     radius = size.width * 0.08f,
                     center = androidx.compose.ui.geometry.Offset(size.width * 0.72f, size.height * 0.38f)
                 )
@@ -152,17 +152,17 @@ fun ANEXSOPZModernLogo(
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
-                    text = if (isBengali) "ANEXSOPZ হেলথ" else "ANEXSOPZ",
+                    text = if (isBengali) "নীলজরি হেলথ" else "Niljori",
                     fontWeight = FontWeight.Black,
                     fontSize = 20.sp,
-                    color = Color(0xFF1E5E2F),
+                    color = Color(0xFF01579B),
                     letterSpacing = 0.5.sp
                 )
                 Text(
                     text = if (isBengali) "ভালো খান, চমৎকার থাকুন!" else "Eat Well, Feel Great!",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 12.sp,
-                    color = Color(0xFF00796B),
+                    color = Color(0xFF00ACC1),
                     letterSpacing = 0.2.sp
                 )
             }

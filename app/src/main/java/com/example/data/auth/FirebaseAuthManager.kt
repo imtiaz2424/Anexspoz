@@ -21,14 +21,14 @@ class FirebaseAuthManager(private val context: Context) {
 
     init {
         // Restore last logged-in user session from SharedPreferences
-        val sharedPrefs = context.getSharedPreferences("anexsopz_auth_simulated", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_auth_simulated", Context.MODE_PRIVATE)
         val uid = sharedPrefs.getString("uid", null)
         val email = sharedPrefs.getString("email", null)
         if (uid != null && email != null) {
             _currentUser.value = AuthUser(uid, email)
         } else {
             // Auto sign-in guest user for developer/local preview so the dashboard loads instantly!
-            val guestEmail = "user@anexsopz.com"
+            val guestEmail = "user@niljori.com"
             val guestUid = "sim_" + Math.abs(guestEmail.hashCode()).toString()
             _currentUser.value = AuthUser(guestUid, guestEmail)
             sharedPrefs.edit().putString("uid", guestUid).putString("email", guestEmail).apply()
@@ -37,7 +37,7 @@ class FirebaseAuthManager(private val context: Context) {
 
     fun signUp(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         // Simulated Flow - save to shared preferences dummy db
-        val sharedPrefs = context.getSharedPreferences("anexsopz_auth_simulated_db", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_auth_simulated_db", Context.MODE_PRIVATE)
         if (sharedPrefs.contains(email)) {
             onResult(false, if (email.contains("@")) "Email already registered!" else "Account already exists!")
             return
@@ -50,7 +50,7 @@ class FirebaseAuthManager(private val context: Context) {
         _currentUser.value = authUser
         
         // Persist session
-        val sessionPrefs = context.getSharedPreferences("anexsopz_auth_simulated", Context.MODE_PRIVATE)
+        val sessionPrefs = context.getSharedPreferences("niljori_auth_simulated", Context.MODE_PRIVATE)
         sessionPrefs.edit().putString("uid", uid).putString("email", email).apply()
         
         onResult(true, null)
@@ -58,21 +58,21 @@ class FirebaseAuthManager(private val context: Context) {
 
     fun signIn(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         // Simulated Flow
-        val sharedPrefs = context.getSharedPreferences("anexsopz_auth_simulated_db", Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences("niljori_auth_simulated_db", Context.MODE_PRIVATE)
         val savedPassword = sharedPrefs.getString(email, null)
         
         // Allow Quick Demo Login / Default member easily
-        if ((email == "user@anexsopz.com" && password == "password123") || 
-            (email == "user@subecha.com" && password == "password123") ||
-            (email == "guest@anexsopz.com" && password == "password123") ||
-            (email == "guest@subecha.com" && password == "password123") ||
+        if ((email == "user@niljori.com" && password == "password123") || 
+            (email == "user@niljori.com" && password == "password123") ||
+            (email == "guest@niljori.com" && password == "password123") ||
+            (email == "guest@niljori.com" && password == "password123") ||
             savedPassword == password) {
             val uid = "sim_" + Math.abs(email.hashCode()).toString()
             val authUser = AuthUser(uid, email)
             _currentUser.value = authUser
             
             // Persist session
-            val sessionPrefs = context.getSharedPreferences("anexsopz_auth_simulated", Context.MODE_PRIVATE)
+            val sessionPrefs = context.getSharedPreferences("niljori_auth_simulated", Context.MODE_PRIVATE)
             sessionPrefs.edit().putString("uid", uid).putString("email", email).apply()
             
             onResult(true, null)
@@ -83,7 +83,7 @@ class FirebaseAuthManager(private val context: Context) {
 
     fun signOut() {
         _currentUser.value = null
-        val sessionPrefs = context.getSharedPreferences("anexsopz_auth_simulated", Context.MODE_PRIVATE)
+        val sessionPrefs = context.getSharedPreferences("niljori_auth_simulated", Context.MODE_PRIVATE)
         sessionPrefs.edit().clear().apply()
     }
 }
