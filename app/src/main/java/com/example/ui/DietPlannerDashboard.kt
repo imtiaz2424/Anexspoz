@@ -874,6 +874,7 @@ fun MealPlanTab(
     val waterLog by viewModel.waterLog.collectAsState()
 
     var showDailyInsightDialog by remember { mutableStateOf(false) }
+    var selectedPlannerMode by remember { mutableStateOf(0) }
 
     val extraSnacksCal = currentFoodLogs.sumOf { it.calories }
     val workoutBurntCal = currentExerciseLogs.sumOf { it.caloriesBurned }
@@ -966,8 +967,53 @@ fun MealPlanTab(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Daily Insight Dashboard Card
-            Card(
+            // AI Diet Planner Mode selection row
+            Text(
+                text = if (isBengali) "ডায়েট প্ল্যানার মোড (Diet Planner Mode):" else "Select AI Diet Planner Mode:",
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.align(Alignment.Start).padding(bottom = 6.dp)
+            )
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+            ) {
+                val modes = listOf(
+                    0 to (if (isBengali) "🍳 দৈনিক রেসিপি" else "🍳 Daily & Recipe"),
+                    1 to (if (isBengali) "📅 ৭-দিনের সাপ্তাহিক" else "📅 7-Day Weekly"),
+                    2 to (if (isBengali) "😊 আবেগ ও মেজাজ" else "😊 Emotion-Based"),
+                    3 to (if (isBengali) "🏃 ফিটনেস ও ব্যায়াম" else "🏃 Fitness Active")
+                )
+                items(modes.size) { idx ->
+                    val mode = modes[idx]
+                    val isSel = selectedPlannerMode == mode.first
+                    FilterChip(
+                        selected = isSel,
+                        onClick = { selectedPlannerMode = mode.first },
+                        label = { Text(mode.second, fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (selectedPlannerMode == 1) {
+                WeeklyMealPlannerView(userProfile = userProfile, isBengali = isBengali)
+            } else if (selectedPlannerMode == 2) {
+                EmotionBasedPlannerView(userProfile = userProfile, isBengali = isBengali)
+            } else if (selectedPlannerMode == 3) {
+                FitnessIntegratedPlannerView(viewModel = viewModel, userProfile = userProfile, isBengali = isBengali)
+            } else {
+                // Daily Insight Dashboard Card
+                Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f)
@@ -1080,7 +1126,9 @@ fun MealPlanTab(
                     categoryName = "Breakfast",
                     isDone = isBreakfastDone,
                     onDoneChange = { completedMeals[breakfastKey] = it },
-                    isNextUp = !isBreakfastDone
+                    isNextUp = !isBreakfastDone,
+                    portion = mealPlan.breakfastPortion,
+                    recipe = mealPlan.breakfastRecipe
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -1091,7 +1139,8 @@ fun MealPlanTab(
                     categoryName = "Snack 1",
                     isDone = isSnack1Done,
                     onDoneChange = { completedMeals[snack1Key] = it },
-                    isNextUp = isBreakfastDone && !isSnack1Done
+                    isNextUp = isBreakfastDone && !isSnack1Done,
+                    portion = mealPlan.snack1Portion
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -1102,7 +1151,9 @@ fun MealPlanTab(
                     categoryName = "Lunch",
                     isDone = isLunchDone,
                     onDoneChange = { completedMeals[lunchKey] = it },
-                    isNextUp = isSnack1Done && !isLunchDone
+                    isNextUp = isSnack1Done && !isLunchDone,
+                    portion = mealPlan.lunchPortion,
+                    recipe = mealPlan.lunchRecipe
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -1113,7 +1164,8 @@ fun MealPlanTab(
                     categoryName = "Snack 2",
                     isDone = isSnack2Done,
                     onDoneChange = { completedMeals[snack2Key] = it },
-                    isNextUp = isLunchDone && !isSnack2Done
+                    isNextUp = isLunchDone && !isSnack2Done,
+                    portion = mealPlan.snack2Portion
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -1124,8 +1176,227 @@ fun MealPlanTab(
                     categoryName = "Dinner",
                     isDone = isDinnerDone,
                     onDoneChange = { completedMeals[dinnerKey] = it },
-                    isNextUp = isSnack2Done && !isDinnerDone
+                    isNextUp = isSnack2Done && !isDinnerDone,
+                    portion = mealPlan.dinnerPortion,
+                    recipe = mealPlan.dinnerRecipe
                 )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Water recommendation card
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F8E9)),
+                    border = BorderStroke(1.dp, Color(0xFFDCEDC8)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("💧", fontSize = 18.sp)
+                            Text(
+                                text = if (isBengali) "প্রস্তাবিত পানি গ্রহণ (Recommended Water)" else "Daily Hydration Target",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp,
+                                color = Color(0xFF33691E)
+                            )
+                        }
+                        val waterLit = mealPlan.waterIntakeLiters ?: (userProfile.weight * 35 / 1000.0)
+                        Text(
+                            text = if (isBengali) "প্রতিদিন কমপক্ষে ${String.format(Locale.US, "%.1f", waterLit)} লিটার বিশুদ্ধ পানি পান করুন।" else "Drink at least ${String.format(Locale.US, "%.1f", waterLit)} Liters of pure water today to stay healthy.",
+                            fontSize = 12.sp,
+                            color = Color(0xFF558B2F)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Exercise recommendation card
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                    border = BorderStroke(1.dp, Color(0xFFC8E6C9)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("🏃", fontSize = 18.sp)
+                            Text(
+                                text = if (isBengali) "শরীরচর্চা ও সক্রিয়তা টিপস (Exercise Tip)" else "Daily Active Exercise Tip",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp,
+                                color = Color(0xFF1B5E20)
+                            )
+                        }
+                        Text(
+                            text = mealPlan.exerciseTip ?: "30 minutes moderate brisk walking or aerobics matching your targets.",
+                            fontSize = 12.sp,
+                            color = Color(0xFF2E7D32)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // WEEKLY SUMMARY & PROGRESS CARD
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    border = BorderStroke(1.dp, Color(0xFFECEFF1)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("📊", fontSize = 20.sp)
+                            Text(
+                                text = if (isBengali) "সাপ্তাহিক ডায়েট ও প্রগতি সারসংক্ষেপ" else "Weekly Diet & Progress Summary",
+                                fontWeight = FontWeight.Black,
+                                fontSize = 14.sp,
+                                color = Color(0xFF37474F)
+                            )
+                        }
+
+                        Divider(color = Color(0xFFECEFF1))
+
+                        // Calorie summary
+                        val weeklyCal = mealPlan.weeklyTotalCalories ?: (mealPlan.calorieTarget * 7)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = if (isBengali) "সাপ্তাহিক টার্গেট ক্যালরি:" else "Weekly Target Calories:",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                            Text(
+                                text = "$weeklyCal kcal",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF2E7D32)
+                            )
+                        }
+
+                        // Macro distribution bars
+                        Text(
+                            text = if (isBengali) "ম্যাক্রোনিউট্রিয়েন্ট বিভাজন (Balanced Macros):" else "Macro Distribution (Target: 40% Carbs, 30% Protein, 30% Fat)",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.DarkGray
+                        )
+
+                        val carbsPct = mealPlan.macroCarbsPercent ?: 40
+                        val protPct = mealPlan.macroProteinPercent ?: 30
+                        val fatPct = mealPlan.macroFatPercent ?: 30
+
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            // Carbs
+                            Column {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(if (isBengali) "কার্বোহাইড্রেট (Carbs)" else "Carbohydrates", fontSize = 10.sp, color = Color.Gray)
+                                    Text("$carbsPct%", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                }
+                                LinearProgressIndicator(
+                                    progress = carbsPct.toFloat() / 100f,
+                                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                                    color = Color(0xFFFFA726),
+                                    trackColor = Color(0xFFFFE0B2)
+                                )
+                            }
+                            // Protein
+                            Column {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(if (isBengali) "প্রোটিন (Protein)" else "Protein", fontSize = 10.sp, color = Color.Gray)
+                                    Text("$protPct%", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                }
+                                LinearProgressIndicator(
+                                    progress = protPct.toFloat() / 100f,
+                                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                                    color = Color(0xFF66BB6A),
+                                    trackColor = Color(0xFFC8E6C9)
+                                )
+                            }
+                            // Fat
+                            Column {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(if (isBengali) "ফ্যাট (Fat)" else "Fats", fontSize = 10.sp, color = Color.Gray)
+                                    Text("$fatPct%", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                }
+                                LinearProgressIndicator(
+                                    progress = fatPct.toFloat() / 100f,
+                                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                                    color = Color(0xFF29B6F6),
+                                    trackColor = Color(0xFFB3E5FC)
+                                )
+                            }
+                        }
+
+                        Divider(color = Color(0xFFECEFF1))
+
+                        // Progress tracker and BMI suggestion
+                        val hMeters = userProfile.height / 100.0
+                        val bmi = if (hMeters > 0) userProfile.weight / (hMeters * hMeters) else 0.0
+                        val bmiLabel = if (bmi < 18.5) "Underweight" else if (bmi < 25.0) "Normal" else "Overweight"
+                        
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = if (isBengali) "আপনার বর্তমান BMI (Body Mass Index):" else "Your Current BMI Index:",
+                                fontSize = 11.sp,
+                                color = Color.Gray
+                            )
+                            Text(
+                                text = "${String.format(Locale.US, "%.1f", bmi)} ($bmiLabel)",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (bmiLabel == "Normal") Color(0xFF2E7D32) else Color(0xFFD84315)
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .background(Color(0xFFF5F7F6), RoundedCornerShape(8.dp))
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = mealPlan.progressSuggestion ?: "Stay consistent! Log your weight regularly to track your biological goals.",
+                                fontSize = 11.sp,
+                                color = Color(0xFF37474F),
+                                lineHeight = 15.sp
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -1210,4 +1481,5 @@ fun MealPlanTab(
             }
         }
     }
+}
 }

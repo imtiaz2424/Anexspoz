@@ -249,34 +249,61 @@ class DietPlannerRepository(private val dao: DietPlannerDao) {
         context: Context
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            // Construct detailed prompt
+            // Construct detailed prompt matching exact instructions
             val prompt = """
-                Generate a personalized healthy diet plan in JSON format for a person with the following details:
-                - Age: ${profile.age} years old
+                You are an AI-powered Diet Planner App.
+                Your task is to generate a personalized daily and weekly meal plan for the user based on their profile and preferences.
+
+                User Profile Inputs:
+                - Age: ${profile.age}
                 - Gender: ${profile.gender}
                 - Weight: ${profile.weight} kg
                 - Height: ${profile.height} cm
                 - Goal: ${profile.goal}
                 - Dietary Preference: ${profile.dietaryPreference}
                 - Allergies: ${profile.allergies.ifBlank { "None" }}
-                - Medical Conditions: ${profile.medicalConditions.ifBlank { "None" }}
-                - Regional Cuisine: ${profile.cuisinePreferences.ifBlank { "Bengali / Bangladesh" }}
+                - Activity Level: ${profile.activityLevel}
 
-                Make sure all meals contain healthy choice items (Traditional foods matching the regional cuisine or general global fit).
+                Instructions:
+                1. Calculate daily calorie needs using standard nutrition formulas (Mifflin-St Jeor or Harris-Benedict) based on activity level factor.
+                2. Distribute calories into 3 main meals (breakfast, lunch, dinner) and 2 snacks.
+                3. Ensure balanced macros: 40% carbs, 30% protein, 30% fat.
+                4. Suggest local food options available in Bangladesh (such as Lal Atar Ruti, brown rice, lentils/dal, local fish like Rui/Tilapia, vegetables, local fruits like banana, papaya).
+                5. Provide portion sizes in grams or cups with calorie count.
+                6. Add recipe suggestions for each meal.
+                7. Include water intake recommendation (in liters).
+                8. Suggest light exercise or activity tips aligned with the user’s goal.
+                9. Provide one motivational health tip at the end of each day.
+
                 The fields in JSON MUST match exactly:
                 {
-                   "totalCalories": <Int value representing daily target>,
-                   "breakfast": "<food description with details, e.g. Oatmeal with Almonds>",
-                   "breakfastCal": <Int calorie>,
-                   "snack1": "<detailed snack description>",
-                   "snack1Cal": <Int calorie>,
-                   "lunch": "<detailed lunch description>",
-                   "lunchCal": <Int calorie>,
-                   "snack2": "<detailed snack description>",
-                   "snack2Cal": <Int calorie>,
-                   "dinner": "<detailed dinner description>",
-                   "dinnerCal": <Int calorie>,
-                   "dailyTip": "<personalized actionable clinical/wellness suggestion>"
+                   "totalCalories": <Int value representing daily target calories calculated using Mifflin-St Jeor>,
+                   "breakfast": "<food description, e.g. Lal Atar Ruti with Egg White Omelet>",
+                   "breakfastCal": <Int calorie for breakfast>,
+                   "breakfastPortion": "<portion size, e.g. 2 pcs ruti (60g), 2 egg whites>",
+                   "breakfastRecipe": "<step-by-step cooking recipe suggestion>",
+                   "snack1": "<detailed snack description, e.g. Local Banana & Almonds>",
+                   "snack1Cal": <Int calorie for snack 1>,
+                   "snack1Portion": "<portion size, e.g. 1 medium banana, 10 almonds>",
+                   "lunch": "<detailed lunch description, e.g. Brown Rice with Rui Fish & Dal>",
+                   "lunchCal": <Int calorie for lunch>,
+                   "lunchPortion": "<portion size, e.g. 1.5 cups brown rice, 100g fish>",
+                   "lunchRecipe": "<step-by-step cooking recipe suggestion>",
+                   "snack2": "<detailed snack description, e.g. Roasted Chickpeas>",
+                   "snack2Cal": <Int calorie for snack 2>,
+                   "snack2Portion": "<portion size, e.g. 0.5 cup (50g)>",
+                   "dinner": "<detailed dinner description, e.g. Chicken Vegetable Soup>",
+                   "dinnerCal": <Int calorie for dinner>,
+                   "dinnerPortion": "<portion size, e.g. 1 large bowl with 100g chicken>",
+                   "dinnerRecipe": "<step-by-step cooking recipe suggestion>",
+                   "waterIntakeLiters": <Double recommended water intake in liters, e.g. 2.8>,
+                   "exerciseTip": "<short exercise tip matching goal>",
+                   "dailyTip": "<motivational health advice at the end of the day>",
+                   "macroCarbsPercent": 40,
+                   "macroProteinPercent": 30,
+                   "macroFatPercent": 30,
+                   "weeklyTotalCalories": <Int total calorie target for the week, e.g. totalCalories * 7>,
+                   "progressSuggestion": "<BMI progress and weight tracker advice>"
                 }
                 Do not wrap in anything else. Output only valid JSON.
             """.trimIndent()
@@ -322,7 +349,22 @@ class DietPlannerRepository(private val dao: DietPlannerDao) {
                 dinner = parsed.dinner,
                 dinnerCal = parsed.dinnerCal,
                 dailyTip = parsed.dailyTip,
-                rawResponse = text
+                rawResponse = text,
+                breakfastPortion = parsed.breakfastPortion ?: "2 pieces (60g)",
+                breakfastRecipe = parsed.breakfastRecipe ?: "Whisk with spices and lightly pan fry.",
+                snack1Portion = parsed.snack1Portion ?: "1 fruit, 10 nuts",
+                lunchPortion = parsed.lunchPortion ?: "1.5 cups rice, 1 pc fish",
+                lunchRecipe = parsed.lunchRecipe ?: "Steam rice, lightly pan-fry fish with mustard oil and turmeric.",
+                snack2Portion = parsed.snack2Portion ?: "0.5 cup",
+                dinnerPortion = parsed.dinnerPortion ?: "1 bowl soup",
+                dinnerRecipe = parsed.dinnerRecipe ?: "Simmer chicken breast with ginger, garlic and seasonal veggies.",
+                waterIntakeLiters = parsed.waterIntakeLiters ?: 2.5,
+                exerciseTip = parsed.exerciseTip ?: "30 minutes moderate walk.",
+                macroCarbsPercent = parsed.macroCarbsPercent ?: 40,
+                macroProteinPercent = parsed.macroProteinPercent ?: 30,
+                macroFatPercent = parsed.macroFatPercent ?: 30,
+                weeklyTotalCalories = parsed.weeklyTotalCalories ?: (parsed.totalCalories * 7),
+                progressSuggestion = parsed.progressSuggestion ?: "Check BMI and maintain weights weekly."
             )
 
             // Save plan and generate checklist
@@ -345,34 +387,57 @@ class DietPlannerRepository(private val dao: DietPlannerDao) {
     }
 
     private fun generateOfflinePlanFallback(profile: UserProfileEntity, date: String): MealPlanEntity {
-        // Basic metabolic math (Harris-Benedict formula approximation)
-        val bmr = if (profile.gender == "Male") {
-            (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5
+        // Mifflin - St Jeor Equation
+        val bmr = if (profile.gender.lowercase(Locale.ROOT) == "male") {
+            (10.0 * profile.weight) + (6.25 * profile.height) - (5.0 * profile.age) + 5.0
         } else {
-            (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) - 161
+            (10.0 * profile.weight) + (6.25 * profile.height) - (5.0 * profile.age) - 161.0
         }
-        val tdee = (bmr * 1.3).toInt() // Active level approximation
-        val targetCal = when (profile.goal) {
-            "Weight Loss" -> (tdee - 500).coerceAtLeast(1200)
-            "Weight Gain" -> tdee + 400
+        
+        // Active level multiplier
+        val multiplier = when (profile.activityLevel.lowercase(Locale.ROOT)) {
+            "sedentary" -> 1.2
+            "active" -> 1.725
+            else -> 1.55 // moderate default
+        }
+        
+        val tdee = (bmr * multiplier).toInt()
+        val targetCal = when (profile.goal.lowercase(Locale.ROOT)) {
+            "weight loss", "ওজন কমানো" -> (tdee - 500).coerceAtLeast(1200)
+            "weight gain", "ওজন বাড়ানো" -> tdee + 400
             else -> tdee
         }
 
         return MealPlanEntity(
             date = date,
             calorieTarget = targetCal,
-            breakfast = "Lal Atar Ruti (2 pcs) (লাল আটার রুটি), Egg white omelette (2 eggs) (ডিমের সাদা অংশ), mixed traditional vegetables (সবজি)",
+            breakfast = "Lal Atar Ruti (লাল আটারের রুটি) & Egg White Omelet",
             breakfastCal = (targetCal * 0.25).toInt(),
-            snack1 = "Handful of almonds (কাঠবাদাম) and 1 local banana (পাকা কলা)",
+            snack1 = "Handful of almonds & Local Banana (কাঠবাদাম ও পাকা কলা)",
             snack1Cal = (targetCal * 0.1).toInt(),
-            lunch = "Brown rice (1.5 cups) (লাল চালের ভাত), Lentil soup (Dal) (ডাল), Bhorta/Vaji (ভর্তা ও ভাজি), and Baked Local Fish (মাছ)",
+            lunch = "Brown rice (লাল চালের ভাত) with Rui Fish Curry & Lentil Soup (Dal)",
             lunchCal = (targetCal * 0.35).toInt(),
-            snack2 = "Green tea (গ্রিন টি) and roasted chickpeas (Chhola bhaja) (ছোলা ভাজা)",
+            snack2 = "Green tea & roasted chickpeas (গ্রিন টি ও ভাজা ছোলা)",
             snack2Cal = (targetCal * 0.1).toInt(),
-            dinner = "Chicken vegetable soup (চিকেন স্যুপ) with local coriander, or flatbread with dahl / চিকেন ও সবজি স্যুপ",
+            dinner = "Chicken vegetable soup (চিকেন ও সবজি স্যুপ)",
             dinnerCal = (targetCal * 0.2).toInt(),
-            dailyTip = "Maintain stable insulin levels by eating complex high-fiber foods.",
-            rawResponse = "Offline Fallback Generated"
+            dailyTip = "Keep up the great work! Consistency is the foundation of long-term health and well-being.",
+            rawResponse = "Offline Fallback Generated",
+            breakfastPortion = "2 pieces (60g), 2 egg whites",
+            breakfastRecipe = "Whisk egg whites with green chilies and onions. Cook with 1 tsp mustard oil. Serve with warm ruti.",
+            snack1Portion = "1 medium banana, 10 almonds",
+            lunchPortion = "1.5 cups brown rice, 1 pc (100g) Rui fish, 1 cup dal",
+            lunchRecipe = "Steam brown rice. Cook fish curry with standard Bengali spices (turmeric, onions, coriander) in minimal oil.",
+            snack2Portion = "0.5 cup roasted chickpeas, 1 cup green tea",
+            dinnerPortion = "1 large bowl soup with 100g chicken breast",
+            dinnerRecipe = "Simmer chicken breast with sliced papaya, carrots, ginger-garlic paste and coriander leaves.",
+            waterIntakeLiters = (profile.weight * 35 / 1000.0).coerceIn(2.0, 4.0),
+            exerciseTip = if (profile.goal.lowercase(Locale.ROOT).contains("loss")) "Complete 30 minutes of brisk walking today." else "Perform 30 minutes of resistance training or bodyweight squats.",
+            macroCarbsPercent = 40,
+            macroProteinPercent = 30,
+            macroFatPercent = 30,
+            weeklyTotalCalories = targetCal * 7,
+            progressSuggestion = "Check your BMI and log weight weekly. Target BMI range is 18.5 - 24.9."
         )
     }
 }

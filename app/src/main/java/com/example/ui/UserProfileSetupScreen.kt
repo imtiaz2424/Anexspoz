@@ -39,6 +39,7 @@ fun UserProfileSetupScreen(
     var weightText by remember { mutableStateOf("70.0") }
     var heightText by remember { mutableStateOf("175.0") }
     var selectedGender by remember { mutableStateOf("Male") }
+    var selectedActivityLevel by remember { mutableStateOf("moderate") }
 
     // Dietary Preferences Selection State
     var selectedPreference by remember { mutableStateOf("Non-Vegetarian") }
@@ -510,6 +511,88 @@ fun UserProfileSetupScreen(
                     }
                 }
 
+                // STEP 5: Activity Level Section
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    border = BorderStroke(1.dp, Color(0xFFECEFF1)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = null,
+                                tint = Color(0xFF00E676),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = if (isBengali) "৫. শারীরিক সক্রিয়তা (Activity Level)" else "5. Select Activity Level",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color(0xFF263238)
+                            )
+                        }
+
+                        Text(
+                            text = if (isBengali) "আপনার দৈনন্দিন কাজের বা ব্যায়ামের পরিমাণ নির্ধারণ করুন:" else "Select the level of daily physical exertion or exercise:",
+                            fontSize = 11.sp,
+                            color = Color.Gray
+                        )
+
+                        val activityLevelsList = listOf(
+                            "sedentary" to (if (isBengali) "অলস জীবনযাত্রা (Sedentary - no exercise)" else "Sedentary (desk job, little/no exercise)"),
+                            "moderate" to (if (isBengali) "মাঝারি পরিশ্রমী (Moderate - 3-5 days/week exercise)" else "Moderate (active 3-5 days/week)"),
+                            "active" to (if (isBengali) "অত্যন্ত পরিশ্রমী (Active - heavy exercise/physical labor)" else "Active (heavy exercise/physical labor)")
+                        )
+
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            activityLevelsList.forEach { item ->
+                                val key = item.first
+                                val label = item.second
+                                val isSelected = selectedActivityLevel == key
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(if (isSelected) Color(0xFFE8F5E9) else Color(0xFFF5F7F6))
+                                        .border(
+                                            1.dp,
+                                            if (isSelected) Color(0xFF00E676) else Color(0xFFECEFF1),
+                                            RoundedCornerShape(10.dp)
+                                        )
+                                        .clickable { selectedActivityLevel = key }
+                                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = label,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) Color(0xFF1B5E20) else Color(0xFF37474F)
+                                    )
+                                    RadioButton(
+                                        selected = isSelected,
+                                        onClick = { selectedActivityLevel = key },
+                                        colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF00E676))
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // SAVE BUTTON
@@ -534,7 +617,8 @@ fun UserProfileSetupScreen(
                             dietaryPreference = selectedPreference,
                             allergies = activeAllergies,
                             medicalConditions = "None", // default
-                            cuisinePreferences = "Bengali" // default
+                            cuisinePreferences = "Bengali", // default
+                            activityLevel = selectedActivityLevel
                         )
 
                         // Fire completion callback to redirect user

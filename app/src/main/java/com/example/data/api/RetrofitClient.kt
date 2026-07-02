@@ -109,7 +109,22 @@ data class DietPlanJsonResponse(
     val snack2Cal: Int,
     val dinner: String,
     val dinnerCal: Int,
-    val dailyTip: String
+    val dailyTip: String,
+    val breakfastPortion: String? = null,
+    val breakfastRecipe: String? = null,
+    val snack1Portion: String? = null,
+    val lunchPortion: String? = null,
+    val lunchRecipe: String? = null,
+    val snack2Portion: String? = null,
+    val dinnerPortion: String? = null,
+    val dinnerRecipe: String? = null,
+    val waterIntakeLiters: Double? = null,
+    val exerciseTip: String? = null,
+    val macroCarbsPercent: Int? = null,
+    val macroProteinPercent: Int? = null,
+    val macroFatPercent: Int? = null,
+    val weeklyTotalCalories: Int? = null,
+    val progressSuggestion: String? = null
 )
 
 interface GeminiApiService {

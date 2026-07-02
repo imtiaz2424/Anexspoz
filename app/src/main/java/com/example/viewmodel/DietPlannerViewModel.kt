@@ -312,19 +312,25 @@ class DietPlannerViewModel(
         dietaryPreference: String,
         allergies: String,
         medicalConditions: String = "None",
-        cuisinePreferences: String = "Bengali"
+        cuisinePreferences: String = "Bengali",
+        activityLevel: String = "moderate"
     ) {
         viewModelScope.launch {
-            // Harris-Benedict formula offline baseline target calories
+            // Mifflin - St Jeor formula offline baseline target calories
             val bmr = if (gender.lowercase(Locale.ROOT) == "male") {
-                88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age)
+                (10.0 * weight) + (6.25 * height) - (5.0 * age) + 5.0
             } else {
-                447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age)
+                (10.0 * weight) + (6.25 * height) - (5.0 * age) - 161.0
             }
-            val maintenance = (bmr * 1.25).toInt()
+            val multiplier = when (activityLevel.lowercase(Locale.ROOT)) {
+                "sedentary" -> 1.2
+                "active" -> 1.725
+                else -> 1.55 // moderate default
+            }
+            val maintenance = (bmr * multiplier).toInt()
             val targetCalories = when (goal) {
-                "Weight Loss", "ওজন কমানো" -> maintenance - 450
-                "Weight Gain", "ওজন বাড়ানো" -> maintenance + 450
+                "Weight Loss", "Weight Loss / Fat Burn", "ওজন কমানো", "Weight Loss / Fat Burn" -> maintenance - 500
+                "Weight Gain", "Weight Gain / Bulk Up", "ওজন বাড়ানো", "Weight Gain / Bulk Up" -> maintenance + 500
                 else -> maintenance
             }.coerceAtLeast(1200)
 
@@ -338,9 +344,10 @@ class DietPlannerViewModel(
                 dietaryPreference = dietaryPreference,
                 allergies = allergies,
                 dailyCalorieTarget = targetCalories,
-                dailyWaterTargetMl = 2500,
+                dailyWaterTargetMl = (weight * 35).toInt().coerceIn(2000, 4000),
                 medicalConditions = medicalConditions,
-                cuisinePreferences = cuisinePreferences
+                cuisinePreferences = cuisinePreferences,
+                activityLevel = activityLevel
             )
 
             repository.saveUserProfile(profile)

@@ -398,7 +398,11 @@ fun MealCardItem(
     categoryName: String,
     isDone: Boolean,
     onDoneChange: (Boolean) -> Unit,
-    isNextUp: Boolean
+    isNextUp: Boolean,
+    portion: String? = null,
+    recipe: String? = null,
+    vegAlternative: String? = null,
+    nonVegAlternative: String? = null
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -480,6 +484,83 @@ fun MealCardItem(
                 lineHeight = 16.sp,
                 modifier = Modifier.padding(start = 32.dp)
             )
+
+            if (!portion.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.padding(start = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("⚖️", fontSize = 11.sp)
+                    Text(
+                        text = "Portion: $portion",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF0288D1)
+                    )
+                }
+            }
+
+            if (!recipe.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(6.dp))
+                var showRecipe by remember { mutableStateOf(false) }
+                Column(modifier = Modifier.padding(start = 32.dp)) {
+                    Text(
+                        text = if (showRecipe) "📖 Hide Recipe Instructions" else "📖 View Recipe Suggestion",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF00C853),
+                        modifier = Modifier.clickable { showRecipe = !showRecipe }
+                    )
+                    if (showRecipe) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = recipe,
+                            fontSize = 11.sp,
+                            color = Color(0xFF1B5E20),
+                            lineHeight = 15.sp,
+                            modifier = Modifier
+                                .background(Color(0xFFE8F5E9), RoundedCornerShape(8.dp))
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+            }
+
+            if (!vegAlternative.isNullOrBlank() || !nonVegAlternative.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (!vegAlternative.isNullOrBlank()) {
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Column(modifier = Modifier.padding(6.dp)) {
+                                Text("🌱 Veg Option:", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                                Text(vegAlternative, fontSize = 9.sp, color = Color(0xFF1B5E20))
+                            }
+                        }
+                    }
+                    if (!nonVegAlternative.isNullOrBlank()) {
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFEBEE)),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Column(modifier = Modifier.padding(6.dp)) {
+                                Text("🍗 Non-Veg Option:", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color(0xFFC62828))
+                                Text(nonVegAlternative, fontSize = 9.sp, color = Color(0xFFB71C1C))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

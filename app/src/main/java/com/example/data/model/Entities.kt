@@ -19,6 +19,7 @@ data class UserProfileEntity(
     val dailyWaterTargetMl: Int = 2500,
     val medical_conditions: List<String> = listOf("None"),
     val cuisine_preferences: List<String> = listOf("Bengali"),
+    val activityLevel: String = "moderate",
     val lastUpdated: Long = System.currentTimeMillis()
 ) {
     @Ignore
@@ -35,6 +36,7 @@ data class UserProfileEntity(
         dailyWaterTargetMl: Int = 2500,
         medicalConditions: String = "None",
         cuisinePreferences: String = "Bengali",
+        activityLevel: String = "moderate",
         lastUpdated: Long = System.currentTimeMillis()
     ) : this(
         id = id,
@@ -49,6 +51,7 @@ data class UserProfileEntity(
         dailyWaterTargetMl = dailyWaterTargetMl,
         medical_conditions = medicalConditions.split(",").map { it.trim() }.filter { it.isNotEmpty() },
         cuisine_preferences = cuisinePreferences.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+        activityLevel = activityLevel,
         lastUpdated = lastUpdated
     )
 
@@ -83,7 +86,22 @@ data class MealPlanEntity(
     val dinner: String,
     val dinnerCal: Int,
     val dailyTip: String,
-    val rawResponse: String // Full raw response text from Gemini
+    val rawResponse: String, // Full raw response text from Gemini
+    val breakfastPortion: String? = null,
+    val breakfastRecipe: String? = null,
+    val snack1Portion: String? = null,
+    val lunchPortion: String? = null,
+    val lunchRecipe: String? = null,
+    val snack2Portion: String? = null,
+    val dinnerPortion: String? = null,
+    val dinnerRecipe: String? = null,
+    val waterIntakeLiters: Double? = null,
+    val exerciseTip: String? = null,
+    val macroCarbsPercent: Int? = null,
+    val macroProteinPercent: Int? = null,
+    val macroFatPercent: Int? = null,
+    val weeklyTotalCalories: Int? = null,
+    val progressSuggestion: String? = null
 )
 
 @Entity(tableName = "weight_logs")
